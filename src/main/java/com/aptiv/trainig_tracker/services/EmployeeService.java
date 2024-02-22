@@ -1,4 +1,4 @@
 package com.aptiv.trainig_tracker.services;
 
-public interface Employee {
+public interface EmployeeService {
 }
