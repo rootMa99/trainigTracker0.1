@@ -7,14 +7,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
-@Entity(name = "category")
+@Entity(name = "crew")
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Category {
+public class Crew {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "categoryName", nullable = false)
-    private String categoryName;
+    @Column(name = "crewName", nullable = false)
+    private String crewName;
 }

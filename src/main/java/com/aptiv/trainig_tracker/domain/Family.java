@@ -1,20 +1,20 @@
 package com.aptiv.trainig_tracker.domain;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
-@Entity(name = "category")
+@Entity(name = "family")
 @Getter @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class Category {
+@AllArgsConstructor
+public class Family {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "categoryName", nullable = false)
-    private String categoryName;
+    @Column(name = "familyName", nullable = false)
+    private String familyName;
 }
