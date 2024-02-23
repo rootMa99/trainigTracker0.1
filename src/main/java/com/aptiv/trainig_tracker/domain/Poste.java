@@ -1,10 +1,13 @@
 package com.aptiv.trainig_tracker.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity(name = "poste")
 @Setter @Getter
@@ -16,4 +19,7 @@ public class Poste {
     private Long id;
     @Column(name = "posteName", nullable = false)
     private String posteName;
+    @OneToMany(mappedBy = "poste", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Employee> employees;
 }
