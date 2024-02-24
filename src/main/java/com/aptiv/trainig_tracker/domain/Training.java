@@ -36,5 +36,8 @@ public class Training {
     private String formatteur;
     @Column(name = "eva")
     private boolean eva;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "trainingType_id")
+    private TrainingType trainingType;
 
 }

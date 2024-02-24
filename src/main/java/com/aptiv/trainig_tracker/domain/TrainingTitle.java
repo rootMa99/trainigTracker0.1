@@ -17,4 +17,7 @@ public class TrainingTitle{
     private Long id;
     @Column(name = "trainingTitleName", nullable = false)
     private String tTitleName;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "trainingType_id")
+    private TrainingType trainingType;
 }
