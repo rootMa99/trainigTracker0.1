@@ -1,5 +1,14 @@
 package com.aptiv.trainig_tracker.models;
 
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter @Setter
 public class DataExcelEmployee {
     private Long matricule;
     private String nom;
