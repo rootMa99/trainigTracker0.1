@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PosteRepo extends JpaRepository<Poste, Long> {
+    Poste findByPosteName(String name);
 }
