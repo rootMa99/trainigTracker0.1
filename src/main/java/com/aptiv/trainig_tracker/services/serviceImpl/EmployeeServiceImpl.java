@@ -71,7 +71,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                         family=familyRepo.save(fm);
                     }
                     employee.setFamily(family);
-                    Department department= departmentRepo.findDepartmentName(dee.getDepartment());
+                    Department department= departmentRepo.findByDepartmentName(dee.getDepartment());
                     if (department==null){
                         Department dprt=new Department();
                         dprt.setDepartmentName(dee.getDepartment());

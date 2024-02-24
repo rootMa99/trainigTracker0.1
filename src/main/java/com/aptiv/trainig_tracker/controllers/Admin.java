@@ -1,5 +1,6 @@
 package com.aptiv.trainig_tracker.controllers;
 
+import com.aptiv.trainig_tracker.services.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,10 +13,10 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/admin")
 @AllArgsConstructor
 public class Admin {
-
+    EmployeeService employeeService;
 
     @PostMapping(path = "/uploadData")
     public void saveDataToDataBase(MultipartFile file) throws IllegalAccessException {
-        //dataService.saveDataToDataBase(file);
+        employeeService.saveEmployeeDataToDb(file);
     }
 }
