@@ -37,4 +37,13 @@ public class Employee {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
     private Department department;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "coordinator_id")
+    private Coordinator coordinator;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shiftLeader_id")
+    private ShiftLeader shiftLeader;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "teamLeader_id")
+    private TeamLeader teamLeader;
 }
