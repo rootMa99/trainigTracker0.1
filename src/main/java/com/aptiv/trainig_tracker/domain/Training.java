@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 
 @Entity(name="training")
@@ -39,5 +40,10 @@ public class Training {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trainingType_id")
     private TrainingType trainingType;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "Training_Employee_Mapping",joinColumns = @JoinColumn(name = "training_id"),
+            inverseJoinColumns = @JoinColumn(name = "employee_id")
+            )
+    private List<Employee> employees;
 
 }
