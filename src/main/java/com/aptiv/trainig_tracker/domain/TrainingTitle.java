@@ -19,7 +19,7 @@ public class TrainingTitle{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "trainingTitleName", nullable = false)
-    private String tTitleName;
+    private String trainingTitleName;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trainingType_id")
     private TrainingType trainingType;

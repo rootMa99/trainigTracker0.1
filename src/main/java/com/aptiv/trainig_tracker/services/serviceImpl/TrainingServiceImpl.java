@@ -70,11 +70,14 @@ public class TrainingServiceImpl implements TrainingService {
             } else {
                 boolean flag=false;
                 for (TrainingDataFormatter tf : trainingDataFormatters) {
-                    if (tf.getTrainingTitle().equals(tfe.getTrainingTitle()) && tf.getTrainingType().equals(tfe.getTrainingType())
-                            && tf.getDdb().equals(tfe.getDdb()) && tf.getDdf().equals(tfe.getDdf())) {
-                        flag=true;
-                        tf.getMatricules().add(tfe.getMatricule());
+                    if (tf.getDdb()!=null && tf.getDdf()!=null){
+                        if (tf.getTrainingTitle().equals(tfe.getTrainingTitle()) && tf.getTrainingType().equals(tfe.getTrainingType())
+                                && tf.getDdb().equals(tfe.getDdb()) && tf.getDdf().equals(tfe.getDdf())) {
+                            flag=true;
+                            tf.getMatricules().add(tfe.getMatricule());
+                        }
                     }
+
                 }
                 if (!flag){
                     TrainingDataFormatter tdf = new TrainingDataFormatter();
