@@ -42,7 +42,7 @@ public class Training {
     private TrainingType trainingType;
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "Training_Employee_Mapping",joinColumns = @JoinColumn(name = "training_id"),
-            inverseJoinColumns = @JoinColumn(name = "employee_id")
+            inverseJoinColumns = @JoinColumn(name = "matricule")
             )
     private List<Employee> employees;
 
