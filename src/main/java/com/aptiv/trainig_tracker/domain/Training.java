@@ -40,6 +40,9 @@ public class Training {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trainingType_id")
     private TrainingType trainingType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "trainingTitle_id")
+    private TrainingTitle trainingTitle;
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "Training_Employee_Mapping",joinColumns = @JoinColumn(name = "training_id"),
             inverseJoinColumns = @JoinColumn(name = "matricule")
