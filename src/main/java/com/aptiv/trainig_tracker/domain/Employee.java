@@ -20,8 +20,6 @@ public class Employee {
     private String nom;
     @Column(name = "prenom", nullable = false)
     private String prenom;
-    @Column(name = "categorie", nullable = false)
-    private String categorie;
     @Column(name = "fonctionEntreprise", nullable = false)
     private String fonctionEntreprise;
     @ManyToOne(fetch = FetchType.LAZY)

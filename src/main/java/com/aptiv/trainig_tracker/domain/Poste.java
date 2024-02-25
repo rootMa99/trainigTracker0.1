@@ -17,7 +17,7 @@ public class Poste {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "posteName", nullable = false)
+    @Column(name = "posteName")
     private String posteName;
     @OneToMany(mappedBy = "poste", cascade = CascadeType.ALL)
     @JsonIgnore

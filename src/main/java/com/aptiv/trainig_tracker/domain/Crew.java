@@ -19,7 +19,7 @@ public class Crew {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "crewName", nullable = false)
+    @Column(name = "crewName")
     private String crewName;
 
     @OneToMany(mappedBy = "crew", cascade = CascadeType.ALL)

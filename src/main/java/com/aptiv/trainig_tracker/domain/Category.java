@@ -18,7 +18,7 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "categoryName", nullable = false)
+    @Column(name = "categoryName")
     private String categoryName;
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     @JsonIgnore

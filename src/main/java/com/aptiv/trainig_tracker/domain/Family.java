@@ -18,7 +18,7 @@ public class Family {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "familyName", nullable = false)
+    @Column(name = "familyName")
     private String familyName;
     @OneToMany(mappedBy = "family", cascade = CascadeType.ALL)
     @JsonIgnore

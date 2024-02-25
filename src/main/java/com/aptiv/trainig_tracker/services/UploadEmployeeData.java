@@ -51,6 +51,7 @@ public class UploadEmployeeData {
                                 done = true;
                             }
                             dataExcelEmployee.setMatricule((long) cell.getNumericCellValue());
+                            System.out.println(cell.getNumericCellValue());
                         }
                         case 1 -> {
                             if (cell.getCellType() == CellType.STRING) {
