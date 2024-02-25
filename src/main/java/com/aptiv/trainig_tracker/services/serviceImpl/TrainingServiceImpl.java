@@ -1,9 +1,7 @@
 package com.aptiv.trainig_tracker.services.serviceImpl;
 
-import com.aptiv.trainig_tracker.domain.Employee;
-import com.aptiv.trainig_tracker.domain.Training;
-import com.aptiv.trainig_tracker.domain.TrainingTitle;
-import com.aptiv.trainig_tracker.domain.TrainingType;
+
+import com.aptiv.trainig_tracker.models.TrainingDataFormatter;
 import com.aptiv.trainig_tracker.models.TrainingFromExcel;
 import com.aptiv.trainig_tracker.repositories.EmployeeRepo;
 import com.aptiv.trainig_tracker.repositories.TrainingRepo;
@@ -28,49 +26,74 @@ public class TrainingServiceImpl implements TrainingService {
     TrainingTypeRepo trainingTypeRepo;
     TrainingTitleRepo trainingTitleRepo;
     TrainingRepo trainingRepo;
+
     @Override
     public void saveTrainingDataToDb(MultipartFile file) throws IllegalAccessException {
-        if (UploadEmployeeData.isValidFormat(file)){
-            try{
-                List<TrainingFromExcel> trainingFromExcels=
+        if (UploadEmployeeData.isValidFormat(file)) {
+            try {
+                List<TrainingFromExcel> trainingFromExcels =
                         UploadEmployeeData.getTrainingDataFromExcel(file.getInputStream());
-                List<Training> trainings=new ArrayList<>();
-                for (TrainingFromExcel tfe: trainingFromExcels){
-                    if (trainings.isEmpty()){
-                        Training training= new Training();
-                        training.setTrainingId(utils.getGeneratedId(22));
-                        TrainingType trainingType=trainingTypeRepo.findByTtName(tfe.getTrainingType());
-                        if (trainingType==null){
-                            TrainingType tt=new TrainingType();
-                            tt.setTtName(tfe.getTrainingType());
-                            trainingType =trainingTypeRepo.save(tt);
-                        }
-                        training.setTrainingType(trainingType);
-                        TrainingTitle trainingTitle= trainingTitleRepo.findByTTitleName(tfe.getTrainingTitle());
-                        if (trainingTitle==null){
-                            TrainingTitle tt=new TrainingTitle();
-                            tt.setTTitleName(tfe.getTrainingTitle());
-                            tt.setTrainingType(trainingType);
-                            trainingTitle=trainingTitleRepo.save(tt);
-                        }
-                        training.setTrainingTitle(trainingTitle);
-                        training.setModalite(tfe.getModalite());
-                        training.setDureeParHeure(tfe.getDph());
-                        training.setDateDebut(tfe.getDdb());
-                        training.setDateFin(tfe.getDdf());
-                        training.setEva(tfe.isEva());
-                        List<Employee> employees=new ArrayList<>();
-                        Employee employee=employeeRepo.findByMatricule(tfe.getMatricule());
-                        if (employee!=null){
-                            employees.add(employee);
-                        }
-                        training.setEmployees(employees);
-                        trainings.add(training);
+                List<TrainingDataFormatter> trainingDataFormatters = formatData(trainingFromExcels);
+                for (TrainingDataFormatter tf: trainingDataFormatters){
+                    System.out.println(
+                            tf.getTrainingId()+" / "+tf.getDdf()+" / "+tf.getDdb()+" / "+tf.getTrainingType()+" / "+
+                                    tf.getTrainingTitle()
+                    );
+                    for (Long l:tf.getMatricules()){
+                        System.out.println(l);
                     }
                 }
-            }catch (IOException e){
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public List<TrainingDataFormatter> formatData(List<TrainingFromExcel> trainingFromExcels) {
+        List<TrainingDataFormatter> trainingDataFormatters = new ArrayList<>();
+        for (TrainingFromExcel tfe : trainingFromExcels) {
+            if (trainingDataFormatters.isEmpty()) {
+                TrainingDataFormatter tdf = new TrainingDataFormatter();
+                tdf.setTrainingId(utils.getGeneratedId(22));
+                tdf.setModalite(tfe.getModalite());
+                tdf.setDph(tfe.getDph());
+                tdf.setDdb(tfe.getDdb());
+                tdf.setPrestataire(tfe.getPrestataire());
+                tdf.setFormatteur(tfe.getFormatteur());
+                tdf.setEva(tfe.isEva());
+                tdf.setTrainingTitle(tfe.getTrainingTitle());
+                tdf.setTrainingType(tfe.getTrainingType());
+                List<Long> matricules = new ArrayList<>();
+                matricules.add(tfe.getMatricule());
+                tdf.setMatricules(matricules);
+                trainingDataFormatters.add(tdf);
+            } else {
+                boolean flag=false;
+                for (TrainingDataFormatter tf : trainingDataFormatters) {
+                    if (tf.getTrainingTitle().equals(tfe.getTrainingTitle()) && tf.getTrainingType().equals(tfe.getTrainingType())
+                            && tf.getDdb().equals(tfe.getDdb()) && tf.getDdf().equals(tfe.getDdf())) {
+                        flag=true;
+                        tf.getMatricules().add(tfe.getMatricule());
+                    }
+                }
+                if (!flag){
+                    TrainingDataFormatter tdf = new TrainingDataFormatter();
+                    tdf.setTrainingId(utils.getGeneratedId(22));
+                    tdf.setModalite(tfe.getModalite());
+                    tdf.setDph(tfe.getDph());
+                    tdf.setDdb(tfe.getDdb());
+                    tdf.setPrestataire(tfe.getPrestataire());
+                    tdf.setFormatteur(tfe.getFormatteur());
+                    tdf.setEva(tfe.isEva());
+                    tdf.setTrainingTitle(tfe.getTrainingTitle());
+                    tdf.setTrainingType(tfe.getTrainingType());
+                    List<Long> matricules = new ArrayList<>();
+                    matricules.add(tfe.getMatricule());
+                    tdf.setMatricules(matricules);
+                    trainingDataFormatters.add(tdf);
+                }
+            }
+        }
+        return trainingDataFormatters;
     }
 }
