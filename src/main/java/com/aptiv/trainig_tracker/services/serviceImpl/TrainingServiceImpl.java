@@ -1,6 +1,10 @@
 package com.aptiv.trainig_tracker.services.serviceImpl;
 
 
+import com.aptiv.trainig_tracker.domain.Employee;
+import com.aptiv.trainig_tracker.domain.Training;
+import com.aptiv.trainig_tracker.domain.TrainingTitle;
+import com.aptiv.trainig_tracker.domain.TrainingType;
 import com.aptiv.trainig_tracker.models.TrainingDataFormatter;
 import com.aptiv.trainig_tracker.models.TrainingFromExcel;
 import com.aptiv.trainig_tracker.repositories.EmployeeRepo;
@@ -34,15 +38,46 @@ public class TrainingServiceImpl implements TrainingService {
                 List<TrainingFromExcel> trainingFromExcels =
                         UploadEmployeeData.getTrainingDataFromExcel(file.getInputStream());
                 List<TrainingDataFormatter> trainingDataFormatters = formatData(trainingFromExcels);
-                for (TrainingDataFormatter tf: trainingDataFormatters){
-                    System.out.println(
-                            tf.getTrainingId()+" / "+tf.getDdf()+" / "+tf.getDdb()+" / "+tf.getTrainingType()+" / "+
-                                    tf.getTrainingTitle()
-                    );
-                    for (Long l:tf.getMatricules()){
-                        System.out.println(l);
+                List<Training> trainings = new ArrayList<>();
+                for (TrainingDataFormatter tfe : trainingDataFormatters) {
+                    if (tfe.getTrainingTitle()==null || tfe.getTrainingType()==null || tfe.getModalite()==null){
+                        continue;
                     }
+                    Training training = new Training();
+                    training.setTrainingId(utils.getGeneratedId(22));
+                    TrainingType trainingType = trainingTypeRepo.findByTtName(tfe.getTrainingType());
+                    if (trainingType == null) {
+                        TrainingType tt = new TrainingType();
+                        tt.setTtName(tfe.getTrainingType());
+                        trainingType = trainingTypeRepo.save(tt);
+                    }
+                    training.setTrainingType(trainingType);
+                    TrainingTitle trainingTitle = trainingTitleRepo.findByTrainingTitleName(tfe.getTrainingTitle());
+                    if (trainingTitle == null) {
+                        TrainingTitle tt = new TrainingTitle();
+                        tt.setTrainingTitleName(tfe.getTrainingTitle());
+                        tt.setTrainingType(trainingType);
+                        trainingTitle = trainingTitleRepo.save(tt);
+                    }
+                    training.setTrainingTitle(trainingTitle);
+                    training.setModalite(tfe.getModalite());
+                    training.setDureeParHeure(tfe.getDph());
+                    training.setDateDebut(tfe.getDdb());
+                    training.setDateFin(tfe.getDdf());
+                    training.setEva(tfe.isEva());
+                    List<Employee> employees = new ArrayList<>();
+                    for (Long l : tfe.getMatricules()) {
+                        Employee employee = employeeRepo.findByMatricule(l);
+                        if (employee != null) {
+                            employees.add(employee);
+                        }
+                    }
+                    training.setEmployees(employees);
+
+                    training.setEmployees(employees);
+                    trainings.add(training);
                 }
+                trainingRepo.saveAll(trainings);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -69,15 +104,15 @@ public class TrainingServiceImpl implements TrainingService {
                 tdf.setMatricules(matricules);
                 trainingDataFormatters.add(tdf);
             } else {
-                boolean flag=false;
+                boolean flag = false;
                 for (TrainingDataFormatter tf : trainingDataFormatters) {
-                        if (tf.getTrainingTitle().equals(tfe.getTrainingTitle()) && tf.getTrainingType().equals(tfe.getTrainingType())
-                                && tf.getDdb().equals(tfe.getDdb()) && tf.getDdf().equals(tfe.getDdf())) {
-                            flag=true;
-                            tf.getMatricules().add(tfe.getMatricule());
-                        }
+                    if (tf.getTrainingTitle().equals(tfe.getTrainingTitle()) && tf.getTrainingType().equals(tfe.getTrainingType())
+                            && tf.getDdb().equals(tfe.getDdb()) && tf.getDdf().equals(tfe.getDdf())) {
+                        flag = true;
+                        tf.getMatricules().add(tfe.getMatricule());
+                    }
                 }
-                if (!flag){
+                if (!flag) {
                     TrainingDataFormatter tdf = new TrainingDataFormatter();
                     tdf.setTrainingId(utils.getGeneratedId(22));
                     tdf.setModalite(tfe.getModalite());
