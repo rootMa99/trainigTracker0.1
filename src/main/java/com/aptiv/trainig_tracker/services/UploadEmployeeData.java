@@ -160,9 +160,11 @@ public class UploadEmployeeData {
                             }
                             if (cell.getCellType() == CellType.NUMERIC) {
                                 trainingFromExcel.setMatricule((long) cell.getNumericCellValue());
+
                             } else {
                                 trainingFromExcel.setMatricule(0L);
                             }
+
                         }
                         case 3 -> {
                             if (cell.getCellType() != BLANK) {

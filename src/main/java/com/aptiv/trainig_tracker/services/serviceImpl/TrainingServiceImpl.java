@@ -58,6 +58,7 @@ public class TrainingServiceImpl implements TrainingService {
                 tdf.setModalite(tfe.getModalite());
                 tdf.setDph(tfe.getDph());
                 tdf.setDdb(tfe.getDdb());
+                tdf.setDdf(tfe.getDdf());
                 tdf.setPrestataire(tfe.getPrestataire());
                 tdf.setFormatteur(tfe.getFormatteur());
                 tdf.setEva(tfe.isEva());
@@ -70,14 +71,11 @@ public class TrainingServiceImpl implements TrainingService {
             } else {
                 boolean flag=false;
                 for (TrainingDataFormatter tf : trainingDataFormatters) {
-                    if (tf.getDdb()!=null && tf.getDdf()!=null){
                         if (tf.getTrainingTitle().equals(tfe.getTrainingTitle()) && tf.getTrainingType().equals(tfe.getTrainingType())
                                 && tf.getDdb().equals(tfe.getDdb()) && tf.getDdf().equals(tfe.getDdf())) {
                             flag=true;
                             tf.getMatricules().add(tfe.getMatricule());
                         }
-                    }
-
                 }
                 if (!flag){
                     TrainingDataFormatter tdf = new TrainingDataFormatter();
@@ -85,6 +83,7 @@ public class TrainingServiceImpl implements TrainingService {
                     tdf.setModalite(tfe.getModalite());
                     tdf.setDph(tfe.getDph());
                     tdf.setDdb(tfe.getDdb());
+                    tdf.setDdf(tfe.getDdf());
                     tdf.setPrestataire(tfe.getPrestataire());
                     tdf.setFormatteur(tfe.getFormatteur());
                     tdf.setEva(tfe.isEva());
