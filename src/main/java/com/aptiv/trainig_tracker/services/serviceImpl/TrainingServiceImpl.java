@@ -5,8 +5,10 @@ import com.aptiv.trainig_tracker.domain.Employee;
 import com.aptiv.trainig_tracker.domain.Training;
 import com.aptiv.trainig_tracker.domain.TrainingTitle;
 import com.aptiv.trainig_tracker.domain.TrainingType;
+import com.aptiv.trainig_tracker.models.EmployeeRest;
 import com.aptiv.trainig_tracker.models.TrainingDataFormatter;
 import com.aptiv.trainig_tracker.models.TrainingFromExcel;
+import com.aptiv.trainig_tracker.models.TrainingRest;
 import com.aptiv.trainig_tracker.repositories.EmployeeRepo;
 import com.aptiv.trainig_tracker.repositories.TrainingRepo;
 import com.aptiv.trainig_tracker.repositories.TrainingTitleRepo;
@@ -20,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -169,5 +172,47 @@ public class TrainingServiceImpl implements TrainingService {
             }
         }
         return trainingDataFormatters;
+    }
+
+    @Override
+    public List<TrainingRest> getAllTrainingBetweenDates(Date stratDate, Date endDate){
+        List<Training> trainings=trainingRepo.findAllByDateDebutBetween(stratDate,endDate);
+        List<TrainingRest> trs=new ArrayList<>();
+        for (Training t: trainings){
+            TrainingRest tr=new TrainingRest();
+            tr.setTrainingId(t.getTrainingId());
+            tr.setModalite(t.getModalite());
+            tr.setDph(t.getDureeParHeure());
+            tr.setDdb(t.getDateDebut());
+            tr.setDdf(t.getDateFin());
+            tr.setPrestataire(t.getPrestataire());
+            tr.setFormatteur(t.getFormatteur());
+            tr.setTrainingType(t.getTrainingType().getTtName());
+            tr.setTrainingTitle(t.getTrainingTitle().getTrainingTitleName());
+            List<EmployeeRest> employeeRests = getEmployeeRests(t);
+            tr.setEmployeeRests(employeeRests);
+        }
+        return trs;
+    }
+
+    private static List<EmployeeRest> getEmployeeRests(Training t) {
+        List<EmployeeRest> employeeRests=new ArrayList<>();
+        for (Employee e: t.getEmployees()){
+            EmployeeRest er=new EmployeeRest();
+            er.setMatricule(e.getMatricule());
+            er.setNom(e.getNom());
+            er.setPrenom(e.getPrenom());
+            er.setCategory(e.getCategory().getCategoryName());
+            er.setFonction(e.getFonctionEntreprise());
+            er.setDepartment(e.getDepartment().getDepartmentName());
+            er.setPoste(e.getPoste().getPosteName());
+            er.setCrew(e.getCrew().getCrewName());
+            er.setFamily(e.getFamily().getFamilyName());
+            er.setCoordinator(e.getCoordinator().getName());
+            er.setShiftLeader(e.getShiftLeader().getName());
+            er.setTeamLeader(e.getTeamLeader().getName());
+            employeeRests.add(er);
+        }
+        return employeeRests;
     }
 }
