@@ -10,6 +10,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Getter @Setter
 public class TrainingFromExcel {
+    private String trainingId;
     private Long matricule;
     private String trainingTitle;
     private String trainingType;

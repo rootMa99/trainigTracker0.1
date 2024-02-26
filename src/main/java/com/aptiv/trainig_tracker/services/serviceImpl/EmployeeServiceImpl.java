@@ -2,6 +2,8 @@ package com.aptiv.trainig_tracker.services.serviceImpl;
 
 import com.aptiv.trainig_tracker.domain.*;
 import com.aptiv.trainig_tracker.models.DataExcelEmployee;
+import com.aptiv.trainig_tracker.models.EmployeeModel;
+import com.aptiv.trainig_tracker.models.TrainingFromExcel;
 import com.aptiv.trainig_tracker.repositories.*;
 import com.aptiv.trainig_tracker.services.EmployeeService;
 import com.aptiv.trainig_tracker.services.UploadEmployeeData;
@@ -28,6 +30,48 @@ public class EmployeeServiceImpl implements EmployeeService {
     PosteRepo posteRepo;
     ShiftLeaderRepo shiftLeaderRepo;
     TeamLeaderRepo teamLeaderRepo;
+
+    @Override
+    public EmployeeModel getEmployeeData(long matricule) {
+        Employee employee= employeeRepo.findByMatricule(matricule);
+        EmployeeModel employeeModel=new EmployeeModel();
+        if (employee!=null){
+            employeeModel.setMatricule(employee.getMatricule());
+            employeeModel.setNom(employee.getNom());
+            employeeModel.setPrenom(employee.getPrenom());
+            employeeModel.setCategory(employee.getCategory().getCategoryName());
+            employeeModel.setFonction(employee.getFonctionEntreprise());
+            employeeModel.setDepartment(employee.getDepartment().getDepartmentName());
+            employeeModel.setPoste(employee.getPoste().getPosteName());
+            employeeModel.setCrew(employee.getCrew().getCrewName());
+            employeeModel.setFamily(employee.getFamily().getFamilyName());
+            employeeModel.setCoordinator(employee.getCoordinator().getName());
+            employeeModel.setShiftLeader(employee.getShiftLeader().getName());
+            employeeModel.setTeamLeader(employee.getTeamLeader().getName());
+            List<TrainingFromExcel>trainingFromExcels= new ArrayList<>();
+            for (Training t: employee.getTrainings()){
+                TrainingFromExcel trainingFromExcel = getTrainingFromExcel(t);
+                trainingFromExcels.add(trainingFromExcel);
+            }
+            employeeModel.setTrainingFromExcels(trainingFromExcels);
+        }
+        return employeeModel;
+    }
+
+    private static TrainingFromExcel getTrainingFromExcel(Training t) {
+        TrainingFromExcel trainingFromExcel=new TrainingFromExcel();
+        trainingFromExcel.setTrainingId(t.getTrainingId());
+        trainingFromExcel.setTrainingTitle(t.getTrainingTitle().getTrainingTitleName());
+        trainingFromExcel.setTrainingType(t.getTrainingType().getTtName());
+        trainingFromExcel.setModalite(t.getModalite());
+        trainingFromExcel.setDph(t.getDureeParHeure());
+        trainingFromExcel.setDdb(t.getDateDebut());
+        trainingFromExcel.setDdf(t.getDateFin());
+        trainingFromExcel.setPrestataire(t.getPrestataire());
+        trainingFromExcel.setFormatteur(t.getFormatteur());
+        trainingFromExcel.setEva(t.isEva());
+        return trainingFromExcel;
+    }
 
     @Override
     public void saveEmployeeDataToDb(MultipartFile file) throws IllegalAccessException {
