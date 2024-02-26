@@ -177,6 +177,7 @@ public class TrainingServiceImpl implements TrainingService {
     @Override
     public List<TrainingRest> getAllTrainingBetweenDates(Date stratDate, Date endDate){
         List<Training> trainings=trainingRepo.findAllByDateDebutBetween(stratDate,endDate);
+        System.out.println(stratDate+" "+endDate+" "+trainings.size());
         List<TrainingRest> trs=new ArrayList<>();
         for (Training t: trainings){
             TrainingRest tr=new TrainingRest();
@@ -191,6 +192,7 @@ public class TrainingServiceImpl implements TrainingService {
             tr.setTrainingTitle(t.getTrainingTitle().getTrainingTitleName());
             List<EmployeeRest> employeeRests = getEmployeeRests(t);
             tr.setEmployeeRests(employeeRests);
+            trs.add(tr);
         }
         return trs;
     }

@@ -36,15 +36,16 @@ public class Admin {
         trainingService.addTrainingToEmployees(trainingDataFormatter);
     }
 
-    //    @GetMapping(path = "/trainingDateBetween")
-//    public List<TrainingRest> getTrainingsBetweenDates(@RequestParam @DateTimeFormat(pattern = "yyyy-mm-dd") Date dateDebut,
-//                                                       @RequestParam @DateTimeFormat(pattern = "yyyy-mm-dd") Date dateFin){
-//
-//        return trainingService.getAllTrainingBetweenDates(dateDebut, dateFin);
-//    }
-    @PostMapping(path = "/trainingDateBetween")
-    public List<TrainingRest> getTrainingsBetweenDates(@RequestBody DateRange dateRange) {
+    @GetMapping(path = "/trainingDateBetween")
+    public List<TrainingRest> getTrainingsBetweenDates(@RequestParam @DateTimeFormat(pattern = "yyyy-mm-dd") Date dateDebut,
+                                                       @RequestParam @DateTimeFormat(pattern = "yyyy-mm-dd") Date dateFin) {
 
-        return trainingService.getAllTrainingBetweenDates(dateRange.getStartDate(), dateRange.getEndDate());
+        return trainingService.getAllTrainingBetweenDates(dateDebut, dateFin);
     }
+
+//    @PostMapping(path = "/trainingDateBetween")
+//    public List<TrainingRest> getTrainingsBetweenDates(@RequestBody DateRange dateRange) {
+//
+//        return trainingService.getAllTrainingBetweenDates(dateRange.getStartDate(), dateRange.getEndDate());
+//    }
 }
