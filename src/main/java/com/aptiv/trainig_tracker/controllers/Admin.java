@@ -4,10 +4,7 @@ import com.aptiv.trainig_tracker.models.TrainingDataFormatter;
 import com.aptiv.trainig_tracker.services.EmployeeService;
 import com.aptiv.trainig_tracker.services.TrainingService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @CrossOrigin(origins = "*")
@@ -29,9 +26,7 @@ public class Admin {
     }
 
     @PostMapping(path = "/addTrainingToEmployees")
-    public void addTrainingToEmployees(TrainingDataFormatter trainingDataFormatter) {
-        //trainingService.addTrainingToEmployees(trainingDataFormatter);
-        System.out.println(trainingDataFormatter.getTrainingType() + " " + trainingDataFormatter.getTrainingTitle() + " " +
-                trainingDataFormatter.getModalite() + " " + trainingDataFormatter.getFormatteur() + " " + trainingDataFormatter.getDdb() + " " + trainingDataFormatter.getDph());
+    public void addTrainingToEmployees(@RequestBody TrainingDataFormatter trainingDataFormatter) {
+        trainingService.addTrainingToEmployees(trainingDataFormatter);
     }
 }

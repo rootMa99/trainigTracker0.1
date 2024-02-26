@@ -16,7 +16,6 @@ public class EmployeeController {
 
     @GetMapping(path ="/employee" )
     public EmployeeModel getEmployeeData(@RequestParam long matricule){
-        System.out.println(matricule);
         return employeeService.getEmployeeData(matricule);
     }
 }
