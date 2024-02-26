@@ -200,13 +200,11 @@ public class UploadEmployeeData {
                             if (cell.getCellType() != BLANK) {
                                 trainingFromExcel.setPrestataire(cell.getStringCellValue());
                             }
-                            System.out.println(cell.getStringCellValue());
                         }
                         case 12 -> {
                             if (cell.getCellType() != BLANK) {
                                 trainingFromExcel.setFormatteur(cell.getStringCellValue());
                             }
-                            System.out.println(cell.getStringCellValue());
                         }
                         case 13 -> {
                             if (cell.getCellType() == CellType.BOOLEAN) {
