@@ -37,8 +37,8 @@ public class Admin {
     }
 
     @GetMapping(path = "/trainingDateBetween")
-    public List<TrainingRest> getTrainingsBetweenDates(@RequestParam @DateTimeFormat(pattern = "yyyy-mm-dd") Date dateDebut,
-                                                       @RequestParam @DateTimeFormat(pattern = "yyyy-mm-dd") Date dateFin) {
+    public List<TrainingRest> getTrainingsBetweenDates(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateDebut,
+                                                       @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateFin) {
         System.out.println(dateDebut+" "+dateFin);
         return trainingService.getAllTrainingBetweenDates(dateDebut, dateFin);
     }
