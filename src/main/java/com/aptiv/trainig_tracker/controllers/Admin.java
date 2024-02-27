@@ -39,13 +39,13 @@ public class Admin {
     @GetMapping(path = "/trainingDateBetween")
     public List<TrainingRest> getTrainingsBetweenDates(@RequestParam @DateTimeFormat(pattern = "yyyy-mm-dd") Date dateDebut,
                                                        @RequestParam @DateTimeFormat(pattern = "yyyy-mm-dd") Date dateFin) {
-
+        System.out.println(dateDebut+" "+dateFin);
         return trainingService.getAllTrainingBetweenDates(dateDebut, dateFin);
     }
 
-//    @PostMapping(path = "/trainingDateBetween")
-//    public List<TrainingRest> getTrainingsBetweenDates(@RequestBody DateRange dateRange) {
-//
-//        return trainingService.getAllTrainingBetweenDates(dateRange.getStartDate(), dateRange.getEndDate());
-//    }
+    @PostMapping(path = "/trainingDateBetween")
+    public List<TrainingRest> getTrainingsBetweenDates(@RequestBody DateRange dateRange) {
+
+        return trainingService.getAllTrainingBetweenDates(dateRange.getStartDate(), dateRange.getEndDate());
+    }
 }
