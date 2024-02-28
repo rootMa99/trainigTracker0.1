@@ -37,7 +37,7 @@ public class Admin {
     @GetMapping(path = "/trainingDateBetween")
     public List<TrainingRest> getTrainingsBetweenDates(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateDebut,
                                                        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateFin) {
-        System.out.println(dateDebut+" "+dateFin);
+        System.out.println(dateDebut + " " + dateFin);
         return trainingService.getAllTrainingBetweenDates(dateDebut, dateFin);
     }
 
@@ -46,27 +46,31 @@ public class Admin {
 
         return trainingService.getAllTrainingBetweenDates(dateRange.getStartDate(), dateRange.getEndDate());
     }
+
     @DeleteMapping(path = "/deleteTrainingFe")
-    public void deleteTrainingFromEmployee(@RequestParam long matricule, @RequestParam String trainingID){
+    public void deleteTrainingFromEmployee(@RequestParam long matricule, @RequestParam String trainingID) {
         trainingService.deleteTrainingFromEmployee(matricule, trainingID);
     }
+
     @DeleteMapping(path = "/deleteTraining")
-    public void deleteTrainingFromEmployee(@RequestParam String trainingID){
+    public void deleteTrainingFromEmployee(@RequestParam String trainingID) {
         trainingService.deletetrainingByID(trainingID);
     }
+
     @DeleteMapping(path = "/deleteTrainingByDateAndTitleAndType")
     public void deleteTrainingFromEmployee(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateDebut,
                                            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateFin,
-                                           @RequestParam String title, @RequestParam String type){
+                                           @RequestParam String title, @RequestParam String type) {
         trainingService.deleteSpecTrainingFromEmployee(dateDebut, dateFin, title, type);
     }
+
     @GetMapping(path = "/allTrainingsById")
     public List<TrainingRest> getTrainings(@RequestParam String trainingID) {
         return trainingService.getAllTraining(trainingID);
     }
 
     @PutMapping(path = "/updateTrainingById")
-    public OperationStatusResult upDateTrainingById(@RequestParam String trainingId,@RequestBody TrainingFromExcel trainingFromExcel){
+    public OperationStatusResult upDateTrainingById(@RequestParam String trainingId, @RequestBody TrainingFromExcel trainingFromExcel) {
         trainingService.updateTrainingByTrainingID(trainingFromExcel, trainingId);
         return new OperationStatusResult("UPDATE", "SUCCESS");
     }
