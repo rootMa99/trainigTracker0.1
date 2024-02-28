@@ -5,10 +5,7 @@ import com.aptiv.trainig_tracker.domain.Employee;
 import com.aptiv.trainig_tracker.domain.Training;
 import com.aptiv.trainig_tracker.domain.TrainingTitle;
 import com.aptiv.trainig_tracker.domain.TrainingType;
-import com.aptiv.trainig_tracker.models.EmployeeRest;
-import com.aptiv.trainig_tracker.models.TrainingDataFormatter;
-import com.aptiv.trainig_tracker.models.TrainingFromExcel;
-import com.aptiv.trainig_tracker.models.TrainingRest;
+import com.aptiv.trainig_tracker.models.*;
 import com.aptiv.trainig_tracker.repositories.EmployeeRepo;
 import com.aptiv.trainig_tracker.repositories.TrainingRepo;
 import com.aptiv.trainig_tracker.repositories.TrainingTitleRepo;
@@ -216,5 +213,14 @@ public class TrainingServiceImpl implements TrainingService {
             employeeRests.add(er);
         }
         return employeeRests;
+    }
+    @Override
+    public void deleteTrainingFromEmployee(long matricule, String trainingId){
+        Training training= trainingRepo.findByTrainingId(trainingId);
+        training.getEmployees().removeIf(em -> em.getMatricule() == matricule);
+        trainingRepo.save(training);
+    }
+    public void deleteSpecTrainingFromEmployee(SpecTraining specTraining){
+
     }
 }

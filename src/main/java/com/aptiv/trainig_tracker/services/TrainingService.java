@@ -12,4 +12,6 @@ public interface TrainingService {
     void addTrainingToEmployees(TrainingDataFormatter trainingDataFormatter);
 
     List<TrainingRest> getAllTrainingBetweenDates(Date stratDate, Date endDate);
+
+    void deleteTrainingFromEmployee(long matricule, String trainingId);
 }

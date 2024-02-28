@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface TrainingRepo extends JpaRepository<Training, Long> {
     List<Training> findAllByDateDebutBetween(Date startDate, Date endDate);
+    Training findByTrainingId(String trainingId);
 }

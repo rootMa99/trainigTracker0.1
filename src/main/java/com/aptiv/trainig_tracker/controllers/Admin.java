@@ -48,4 +48,8 @@ public class Admin {
 
         return trainingService.getAllTrainingBetweenDates(dateRange.getStartDate(), dateRange.getEndDate());
     }
+    @DeleteMapping(path = "/deleteTrainingFe")
+    public void deleteTrainingFromEmployee(@RequestParam long matricule, @RequestParam String trainingID){
+        trainingService.deleteTrainingFromEmployee(matricule, trainingID);
+    }
 }
