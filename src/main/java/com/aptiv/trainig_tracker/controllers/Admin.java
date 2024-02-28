@@ -52,4 +52,12 @@ public class Admin {
     public void deleteTrainingFromEmployee(@RequestParam long matricule, @RequestParam String trainingID){
         trainingService.deleteTrainingFromEmployee(matricule, trainingID);
     }
+    @DeleteMapping(path = "/deleteTraining")
+    public void deleteTrainingFromEmployee(@RequestParam String trainingID){
+        trainingService.deletetrainingByID(trainingID);
+    }
+    @GetMapping(path = "/allTrainingsById")
+    public List<TrainingRest> getTrainings(@RequestParam String trainingID) {
+        return trainingService.getAllTraining(trainingID);
+    }
 }

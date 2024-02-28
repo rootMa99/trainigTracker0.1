@@ -223,4 +223,30 @@ public class TrainingServiceImpl implements TrainingService {
     public void deleteSpecTrainingFromEmployee(SpecTraining specTraining){
 
     }
+    @Override
+    public void deletetrainingByID(String trainingId){
+        Training training= trainingRepo.findByTrainingId(trainingId);
+        trainingRepo.delete(training);
+    }
+    @Override
+    public List<TrainingRest> getAllTraining(String trainingId){
+        List<Training> trainings=trainingRepo.findAllTrainingId(trainingId);
+        List<TrainingRest> trs=new ArrayList<>();
+        for (Training t: trainings){
+            TrainingRest tr=new TrainingRest();
+            tr.setTrainingId(t.getTrainingId());
+            tr.setModalite(t.getModalite());
+            tr.setDph(t.getDureeParHeure());
+            tr.setDdb(t.getDateDebut());
+            tr.setDdf(t.getDateFin());
+            tr.setPrestataire(t.getPrestataire());
+            tr.setFormatteur(t.getFormatteur());
+            tr.setTrainingType(t.getTrainingType().getTtName());
+            tr.setTrainingTitle(t.getTrainingTitle().getTrainingTitleName());
+            List<EmployeeRest> employeeRests = getEmployeeRests(t);
+            tr.setEmployeeRests(employeeRests);
+            trs.add(tr);
+        }
+        return trs;
+    }
 }
