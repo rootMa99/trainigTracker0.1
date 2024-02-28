@@ -15,7 +15,7 @@ public class TrainingFromExcel {
     private String trainingTitle;
     private String trainingType;
     private String modalite;
-    private double dph;
+    private Double dph;
     private Date ddb;
     private Date ddf;
     private String prestataire;

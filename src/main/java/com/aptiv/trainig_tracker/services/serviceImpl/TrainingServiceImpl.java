@@ -267,4 +267,34 @@ public class TrainingServiceImpl implements TrainingService {
         return trs;
     }
 
+    public void updateTrainingByTrainingID(TrainingFromExcel trainingFromExcel, String trainingId){
+        Training training=trainingRepo.findByTrainingId(trainingId);
+        if (training==null) throw new RuntimeException("training Does Not Exist, "+trainingId);
+        if (trainingFromExcel.getTrainingTitle()!=null){
+            TrainingTitle trainingTitle=trainingTitleRepo.findByTrainingTitleName(trainingFromExcel.getTrainingTitle());
+            training.setTrainingTitle(trainingTitle);
+        }
+        if (trainingFromExcel.getTrainingType()!=null){
+            TrainingType trainingType= trainingTypeRepo.findByTtName(trainingFromExcel.getTrainingType());
+            training.setTrainingType(trainingType);
+        }
+        if (trainingFromExcel.getModalite()!=null){
+            training.setModalite(trainingFromExcel.getModalite());
+        }
+        if (trainingFromExcel.getDph()!=null){
+            training.setDureeParHeure(trainingFromExcel.getDph());
+        }
+        if (trainingFromExcel.getDdb()!=null){
+            training.setDateDebut(trainingFromExcel.getDdb());
+        }
+        if (trainingFromExcel.getDdf()!=null){
+            training.setDateFin(trainingFromExcel.getDdf());
+        }
+        if (trainingFromExcel.getPrestataire()!=null){
+            training.setPrestataire(trainingFromExcel.getPrestataire());
+        }
+        if (trainingFromExcel.getFormatteur()!=null){
+            training.setFormatteur(trainingFromExcel.getFormatteur());
+        }
+    }
 }
