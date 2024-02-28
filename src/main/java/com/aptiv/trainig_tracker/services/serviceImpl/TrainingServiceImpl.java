@@ -234,14 +234,14 @@ public class TrainingServiceImpl implements TrainingService {
         if (training!=null){
             trainingRepo.delete(training);
             System.out.println(training.getTrainingId());
-        }else {
-            System.out.println("not found");
-        }
+        }else throw new RuntimeException("No training Found");
     }
 
     @Override
     public void deletetrainingByID(String trainingId) {
         Training training = trainingRepo.findByTrainingId(trainingId);
+        if (training==null) throw new RuntimeException("training Does Not Exist," +
+                " You Try To Delete Formation With ID: "+trainingId);
         trainingRepo.delete(training);
     }
 
