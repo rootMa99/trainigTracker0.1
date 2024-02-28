@@ -226,11 +226,13 @@ public class TrainingServiceImpl implements TrainingService {
     @Override
     public void deletetrainingByID(String trainingId){
         Training training= trainingRepo.findByTrainingId(trainingId);
-        trainingRepo.delete(training);
+//        trainingRepo.delete(training);
+        System.out.println(training.getTrainingId());
+        trainingRepo.deleteById(training.getId());
     }
     @Override
     public List<TrainingRest> getAllTraining(String trainingId){
-        List<Training> trainings=trainingRepo.findAllTrainingId(trainingId);
+        List<Training> trainings=trainingRepo.findAllByTrainingId(trainingId);
         List<TrainingRest> trs=new ArrayList<>();
         for (Training t: trainings){
             TrainingRest tr=new TrainingRest();

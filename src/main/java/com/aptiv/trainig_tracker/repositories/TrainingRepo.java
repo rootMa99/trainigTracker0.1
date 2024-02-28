@@ -14,5 +14,6 @@ public interface TrainingRepo extends JpaRepository<Training, Long> {
     Training findByTrainingTypeTtNameAndTrainingTitleTrainingTitleNameAndDateDebutBetween(String trainingType,
                                                                                           String trainingTitle,
                                                                                           Date startDate, Date endDate);
-    List<Training> findAllTrainingId(String trainingId);
+    List<Training> findAllByTrainingId(String trainingId);
+
 }
