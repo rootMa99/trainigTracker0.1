@@ -74,4 +74,12 @@ public class Admin {
         trainingService.updateTrainingByTrainingID(trainingFromExcel, trainingId);
         return new OperationStatusResult("UPDATE", "SUCCESS");
     }
+    @PutMapping(path = "/updateTrainingByDateAndTitleAndType")
+    public OperationStatusResult updateTrainingByDateAndTitleAndType(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateDebut,
+                                                                     @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateFin,
+                                                                     @RequestParam String title,@RequestParam String type,
+                                                                     @RequestBody TrainingFromExcel trainingFromExcel){
+        trainingService.updateTrainingByDateAndTitleAndType(dateDebut, dateFin, title, type, trainingFromExcel);
+        return new OperationStatusResult("UPDATE", "SUCCESS");
+    }
 }

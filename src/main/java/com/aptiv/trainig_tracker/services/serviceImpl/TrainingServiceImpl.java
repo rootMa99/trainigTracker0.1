@@ -229,17 +229,17 @@ public class TrainingServiceImpl implements TrainingService {
         Training training =
                 trainingRepo.findByTrainingTypeTtNameAndTrainingTitleTrainingTitleNameAndDateDebutBetween(type,
                         title, dateDebut, dateFin);
-        if (training!=null){
+        if (training != null) {
             trainingRepo.delete(training);
             System.out.println(training.getTrainingId());
-        }else throw new RuntimeException("No training Found");
+        } else throw new RuntimeException("No training Found");
     }
 
     @Override
     public void deletetrainingByID(String trainingId) {
         Training training = trainingRepo.findByTrainingId(trainingId);
-        if (training==null) throw new RuntimeException("training Does Not Exist," +
-                " You Try To Delete Formation With ID: "+trainingId);
+        if (training == null) throw new RuntimeException("training Does Not Exist," +
+                " You Try To Delete Formation With ID: " + trainingId);
         trainingRepo.delete(training);
     }
 
@@ -264,39 +264,59 @@ public class TrainingServiceImpl implements TrainingService {
         }
         return trs;
     }
+
     @Override
-    public void updateTrainingByTrainingID(TrainingFromExcel trainingFromExcel, String trainingId){
-        Training training=trainingRepo.findByTrainingId(trainingId);
-        if (training==null) throw new RuntimeException("training Does Not Exist, "+trainingId);
-        if (trainingFromExcel.getTrainingTitle()!=null){
-            TrainingTitle trainingTitle=trainingTitleRepo.findByTrainingTitleName(trainingFromExcel.getTrainingTitle());
+    public void updateTrainingByTrainingID(TrainingFromExcel trainingFromExcel, String trainingId) {
+        Training training = trainingRepo.findByTrainingId(trainingId);
+        if (training == null) throw new RuntimeException("training Does Not Exist, " + trainingId);
+        try {
+            trainingRepo.save(modifyTraining(trainingFromExcel, training));
+        } catch (Exception e) {
+            throw new RuntimeException("Something Went Wrong");
+        }
+    }
+
+    private Training modifyTraining(TrainingFromExcel trainingFromExcel, Training training) {
+        if (trainingFromExcel.getTrainingTitle() != null) {
+            TrainingTitle trainingTitle = trainingTitleRepo.findByTrainingTitleName(trainingFromExcel.getTrainingTitle());
             training.setTrainingTitle(trainingTitle);
         }
-        if (trainingFromExcel.getTrainingType()!=null){
-            TrainingType trainingType= trainingTypeRepo.findByTtName(trainingFromExcel.getTrainingType());
+        if (trainingFromExcel.getTrainingType() != null) {
+            TrainingType trainingType = trainingTypeRepo.findByTtName(trainingFromExcel.getTrainingType());
             training.setTrainingType(trainingType);
         }
-        if (trainingFromExcel.getModalite()!=null){
+        if (trainingFromExcel.getModalite() != null) {
             training.setModalite(trainingFromExcel.getModalite());
         }
-        if (trainingFromExcel.getDph()!=null){
+        if (trainingFromExcel.getDph() != null) {
             training.setDureeParHeure(trainingFromExcel.getDph());
         }
-        if (trainingFromExcel.getDdb()!=null){
+        if (trainingFromExcel.getDdb() != null) {
             training.setDateDebut(trainingFromExcel.getDdb());
         }
-        if (trainingFromExcel.getDdf()!=null){
+        if (trainingFromExcel.getDdf() != null) {
             training.setDateFin(trainingFromExcel.getDdf());
         }
-        if (trainingFromExcel.getPrestataire()!=null){
+        if (trainingFromExcel.getPrestataire() != null) {
             training.setPrestataire(trainingFromExcel.getPrestataire());
         }
-        if (trainingFromExcel.getFormatteur()!=null){
+        if (trainingFromExcel.getFormatteur() != null) {
             training.setFormatteur(trainingFromExcel.getFormatteur());
         }
-        try{
-            trainingRepo.save(training);
-        }catch (Exception e){
+        return training;
+    }
+
+    @Override
+    public void updateTrainingByDateAndTitleAndType(Date dateDebut,
+                                                    Date dateFin,
+                                                    String title, String type, TrainingFromExcel trainingFromExcel) {
+        Training training =
+                trainingRepo.findByTrainingTypeTtNameAndTrainingTitleTrainingTitleNameAndDateDebutBetween(type,
+                        title, dateDebut, dateFin);
+        if (training == null) throw new RuntimeException("training Does Not Exist");
+        try {
+            trainingRepo.save(modifyTraining(trainingFromExcel, training));
+        } catch (Exception e) {
             throw new RuntimeException("Something Went Wrong");
         }
     }

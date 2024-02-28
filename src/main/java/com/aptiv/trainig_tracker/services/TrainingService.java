@@ -25,4 +25,8 @@ public interface TrainingService {
     List<TrainingRest> getAllTraining(String trainingId);
 
     void updateTrainingByTrainingID(TrainingFromExcel trainingFromExcel, String trainingId);
+
+    void updateTrainingByDateAndTitleAndType(Date dateDebut,
+                                             Date dateFin,
+                                             String title, String type, TrainingFromExcel trainingFromExcel);
 }
