@@ -19,7 +19,7 @@ public class Training {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "trainingId", nullable = false)
+    @Column(name = "trainingId", nullable = false, unique = true)
     private String trainingId;
     @Column(name = "modalite", nullable = false)
     private String modalite;
@@ -43,7 +43,7 @@ public class Training {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trainingTitle_id")
     private TrainingTitle trainingTitle;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(name = "Training_Employee_Mapping",joinColumns = @JoinColumn(name = "training_id"),
             inverseJoinColumns = @JoinColumn(name = "matricule")
             )

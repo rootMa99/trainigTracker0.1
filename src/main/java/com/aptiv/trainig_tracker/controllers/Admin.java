@@ -1,6 +1,7 @@
 package com.aptiv.trainig_tracker.controllers;
 
 import com.aptiv.trainig_tracker.models.DateRange;
+import com.aptiv.trainig_tracker.models.SpecTraining;
 import com.aptiv.trainig_tracker.models.TrainingDataFormatter;
 import com.aptiv.trainig_tracker.models.TrainingRest;
 import com.aptiv.trainig_tracker.services.EmployeeService;
@@ -55,6 +56,12 @@ public class Admin {
     @DeleteMapping(path = "/deleteTraining")
     public void deleteTrainingFromEmployee(@RequestParam String trainingID){
         trainingService.deletetrainingByID(trainingID);
+    }
+    @DeleteMapping(path = "/deleteTrainingByDateAndTitleAndType")
+    public void deleteTrainingFromEmployee(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateDebut,
+                                           @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateFin,
+                                           @RequestParam String title, @RequestParam String type){
+        trainingService.deleteSpecTrainingFromEmployee(dateDebut, dateFin, title, type);
     }
     @GetMapping(path = "/allTrainingsById")
     public List<TrainingRest> getTrainings(@RequestParam String trainingID) {

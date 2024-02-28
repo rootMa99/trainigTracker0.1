@@ -14,7 +14,9 @@ import com.aptiv.trainig_tracker.services.TrainingService;
 import com.aptiv.trainig_tracker.services.UploadEmployeeData;
 import com.aptiv.trainig_tracker.ui.Utils;
 import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -40,7 +42,7 @@ public class TrainingServiceImpl implements TrainingService {
                 List<TrainingDataFormatter> trainingDataFormatters = formatData(trainingFromExcels);
                 List<Training> trainings = new ArrayList<>();
                 for (TrainingDataFormatter tfe : trainingDataFormatters) {
-                    if (tfe.getTrainingTitle()==null || tfe.getTrainingType()==null || tfe.getModalite()==null){
+                    if (tfe.getTrainingTitle() == null || tfe.getTrainingType() == null || tfe.getModalite() == null) {
                         continue;
                     }
                     Training training = new Training();
@@ -86,7 +88,7 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     public void addTrainingToEmployees(TrainingDataFormatter trainingDataFormatter) {
-        Training training=new Training();
+        Training training = new Training();
         training.setTrainingId(utils.getGeneratedId(22));
         TrainingType trainingType = trainingTypeRepo.findByTtName(trainingDataFormatter.getTrainingType());
         if (trainingType == null) {
@@ -172,12 +174,12 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
-    public List<TrainingRest> getAllTrainingBetweenDates(Date stratDate, Date endDate){
-        List<Training> trainings=trainingRepo.findAllByDateDebutBetween(stratDate,endDate);
-        System.out.println(stratDate+" "+endDate+" "+trainings.size());
-        List<TrainingRest> trs=new ArrayList<>();
-        for (Training t: trainings){
-            TrainingRest tr=new TrainingRest();
+    public List<TrainingRest> getAllTrainingBetweenDates(Date stratDate, Date endDate) {
+        List<Training> trainings = trainingRepo.findAllByDateDebutBetween(stratDate, endDate);
+        System.out.println(stratDate + " " + endDate + " " + trainings.size());
+        List<TrainingRest> trs = new ArrayList<>();
+        for (Training t : trainings) {
+            TrainingRest tr = new TrainingRest();
             tr.setTrainingId(t.getTrainingId());
             tr.setModalite(t.getModalite());
             tr.setDph(t.getDureeParHeure());
@@ -195,9 +197,9 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     private static List<EmployeeRest> getEmployeeRests(Training t) {
-        List<EmployeeRest> employeeRests=new ArrayList<>();
-        for (Employee e: t.getEmployees()){
-            EmployeeRest er=new EmployeeRest();
+        List<EmployeeRest> employeeRests = new ArrayList<>();
+        for (Employee e : t.getEmployees()) {
+            EmployeeRest er = new EmployeeRest();
             er.setMatricule(e.getMatricule());
             er.setNom(e.getNom());
             er.setPrenom(e.getPrenom());
@@ -214,28 +216,41 @@ public class TrainingServiceImpl implements TrainingService {
         }
         return employeeRests;
     }
+
     @Override
-    public void deleteTrainingFromEmployee(long matricule, String trainingId){
-        Training training= trainingRepo.findByTrainingId(trainingId);
+    public void deleteTrainingFromEmployee(long matricule, String trainingId) {
+        Training training = trainingRepo.findByTrainingId(trainingId);
         training.getEmployees().removeIf(em -> em.getMatricule() == matricule);
         trainingRepo.save(training);
     }
-    public void deleteSpecTrainingFromEmployee(SpecTraining specTraining){
 
-    }
     @Override
-    public void deletetrainingByID(String trainingId){
-        Training training= trainingRepo.findByTrainingId(trainingId);
-//        trainingRepo.delete(training);
-        System.out.println(training.getTrainingId());
-        trainingRepo.deleteById(training.getId());
+    public void deleteSpecTrainingFromEmployee(Date dateDebut,
+                                               Date dateFin,
+                                               String title, String type) {
+        Training training =
+                trainingRepo.findByTrainingTypeTtNameAndTrainingTitleTrainingTitleNameAndDateDebutBetween(type,
+                        title, dateDebut, dateFin);
+        if (training!=null){
+            trainingRepo.delete(training);
+            System.out.println(training.getTrainingId());
+        }else {
+            System.out.println("not found");
+        }
     }
+
     @Override
-    public List<TrainingRest> getAllTraining(String trainingId){
-        List<Training> trainings=trainingRepo.findAllByTrainingId(trainingId);
-        List<TrainingRest> trs=new ArrayList<>();
-        for (Training t: trainings){
-            TrainingRest tr=new TrainingRest();
+    public void deletetrainingByID(String trainingId) {
+        Training training = trainingRepo.findByTrainingId(trainingId);
+        trainingRepo.delete(training);
+    }
+
+    @Override
+    public List<TrainingRest> getAllTraining(String trainingId) {
+        List<Training> trainings = trainingRepo.findAllByTrainingId(trainingId);
+        List<TrainingRest> trs = new ArrayList<>();
+        for (Training t : trainings) {
+            TrainingRest tr = new TrainingRest();
             tr.setTrainingId(t.getTrainingId());
             tr.setModalite(t.getModalite());
             tr.setDph(t.getDureeParHeure());
@@ -251,4 +266,5 @@ public class TrainingServiceImpl implements TrainingService {
         }
         return trs;
     }
+
 }
