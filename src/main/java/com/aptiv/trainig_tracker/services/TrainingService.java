@@ -2,6 +2,7 @@ package com.aptiv.trainig_tracker.services;
 
 import com.aptiv.trainig_tracker.models.SpecTraining;
 import com.aptiv.trainig_tracker.models.TrainingDataFormatter;
+import com.aptiv.trainig_tracker.models.TrainingFromExcel;
 import com.aptiv.trainig_tracker.models.TrainingRest;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,4 +23,6 @@ public interface TrainingService {
     void deletetrainingByID(String trainingId);
 
     List<TrainingRest> getAllTraining(String trainingId);
+
+    void updateTrainingByTrainingID(TrainingFromExcel trainingFromExcel, String trainingId);
 }

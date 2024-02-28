@@ -1,9 +1,6 @@
 package com.aptiv.trainig_tracker.controllers;
 
-import com.aptiv.trainig_tracker.models.DateRange;
-import com.aptiv.trainig_tracker.models.SpecTraining;
-import com.aptiv.trainig_tracker.models.TrainingDataFormatter;
-import com.aptiv.trainig_tracker.models.TrainingRest;
+import com.aptiv.trainig_tracker.models.*;
 import com.aptiv.trainig_tracker.services.EmployeeService;
 import com.aptiv.trainig_tracker.services.TrainingService;
 import lombok.AllArgsConstructor;
@@ -66,5 +63,11 @@ public class Admin {
     @GetMapping(path = "/allTrainingsById")
     public List<TrainingRest> getTrainings(@RequestParam String trainingID) {
         return trainingService.getAllTraining(trainingID);
+    }
+
+    @PutMapping(path = "/updateTrainingById")
+    public OperationStatusResult upDateTrainingById(@RequestParam String trainingId,@RequestBody TrainingFromExcel trainingFromExcel){
+        trainingService.updateTrainingByTrainingID(trainingFromExcel, trainingId);
+        return new OperationStatusResult("UPDATE", "SUCCESS");
     }
 }

@@ -14,9 +14,7 @@ import com.aptiv.trainig_tracker.services.TrainingService;
 import com.aptiv.trainig_tracker.services.UploadEmployeeData;
 import com.aptiv.trainig_tracker.ui.Utils;
 import lombok.AllArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -34,7 +32,7 @@ public class TrainingServiceImpl implements TrainingService {
     TrainingRepo trainingRepo;
 
     @Override
-    public void saveTrainingDataToDb(MultipartFile file) throws IllegalAccessException {
+    public void saveTrainingDataToDb(MultipartFile file) {
         if (UploadEmployeeData.isValidFormat(file)) {
             try {
                 List<TrainingFromExcel> trainingFromExcels =
@@ -266,7 +264,7 @@ public class TrainingServiceImpl implements TrainingService {
         }
         return trs;
     }
-
+    @Override
     public void updateTrainingByTrainingID(TrainingFromExcel trainingFromExcel, String trainingId){
         Training training=trainingRepo.findByTrainingId(trainingId);
         if (training==null) throw new RuntimeException("training Does Not Exist, "+trainingId);
@@ -295,6 +293,11 @@ public class TrainingServiceImpl implements TrainingService {
         }
         if (trainingFromExcel.getFormatteur()!=null){
             training.setFormatteur(trainingFromExcel.getFormatteur());
+        }
+        try{
+            trainingRepo.save(training);
+        }catch (Exception e){
+            throw new RuntimeException("Something Went Wrong");
         }
     }
 }
