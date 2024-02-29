@@ -90,7 +90,7 @@ public class TrainingServiceImpl implements TrainingService {
                 trainingRepo.findByTrainingTypeTtNameAndTrainingTitleTrainingTitleNameAndDateDebutBetween(trainingDataFormatter.getTrainingType(),
                         trainingDataFormatter.getTrainingTitle(), trainingDataFormatter.getDdb(),
                         trainingDataFormatter.getDdf());
-        if (trainingf==null){
+        if (trainingf == null) {
             Training training = new Training();
             training.setTrainingId(utils.getGeneratedId(22));
             TrainingType trainingType = trainingTypeRepo.findByTtName(trainingDataFormatter.getTrainingType());
@@ -124,12 +124,14 @@ public class TrainingServiceImpl implements TrainingService {
             }
             training.setEmployees(employees);
             trainingRepo.save(training);
-        }else {
+        } else {
             List<Employee> employees = trainingf.getEmployees();
             for (Long l : trainingDataFormatter.getMatricules()) {
                 Employee employee = employeeRepo.findByMatricule(l);
                 if (employee != null) {
-                    employees.add(employee);
+                    if (!employees.contains(employee)) {
+                        employees.add(employee);
+                    }
                 }
             }
             trainingf.setEmployees(employees);
