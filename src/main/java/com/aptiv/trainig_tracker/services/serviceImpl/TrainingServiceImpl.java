@@ -86,39 +86,56 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     public void addTrainingToEmployees(TrainingDataFormatter trainingDataFormatter) {
-        Training training = new Training();
-        training.setTrainingId(utils.getGeneratedId(22));
-        TrainingType trainingType = trainingTypeRepo.findByTtName(trainingDataFormatter.getTrainingType());
-        if (trainingType == null) {
-            TrainingType tt = new TrainingType();
-            tt.setTtName(trainingDataFormatter.getTrainingType());
-            trainingType = trainingTypeRepo.save(tt);
-        }
-        training.setTrainingType(trainingType);
-        TrainingTitle trainingTitle = trainingTitleRepo.findByTrainingTitleName(trainingDataFormatter.getTrainingTitle());
-        if (trainingTitle == null) {
-            TrainingTitle tt = new TrainingTitle();
-            tt.setTrainingTitleName(trainingDataFormatter.getTrainingTitle());
-            tt.setTrainingType(trainingType);
-            trainingTitle = trainingTitleRepo.save(tt);
-        }
-        training.setTrainingTitle(trainingTitle);
-        training.setModalite(trainingDataFormatter.getModalite());
-        training.setDureeParHeure(trainingDataFormatter.getDph());
-        training.setDateDebut(trainingDataFormatter.getDdb());
-        training.setDateFin(trainingDataFormatter.getDdf());
-        training.setEva(trainingDataFormatter.isEva());
-        training.setFormatteur(trainingDataFormatter.getFormatteur());
-        training.setPrestataire(trainingDataFormatter.getPrestataire());
-        List<Employee> employees = new ArrayList<>();
-        for (Long l : trainingDataFormatter.getMatricules()) {
-            Employee employee = employeeRepo.findByMatricule(l);
-            if (employee != null) {
-                employees.add(employee);
+        Training trainingf =
+                trainingRepo.findByTrainingTypeTtNameAndTrainingTitleTrainingTitleNameAndDateDebutBetween(trainingDataFormatter.getTrainingType(),
+                        trainingDataFormatter.getTrainingTitle(), trainingDataFormatter.getDdb(),
+                        trainingDataFormatter.getDdf());
+        if (trainingf==null){
+            Training training = new Training();
+            training.setTrainingId(utils.getGeneratedId(22));
+            TrainingType trainingType = trainingTypeRepo.findByTtName(trainingDataFormatter.getTrainingType());
+            if (trainingType == null) {
+                TrainingType tt = new TrainingType();
+                tt.setTtName(trainingDataFormatter.getTrainingType());
+                trainingType = trainingTypeRepo.save(tt);
             }
+            training.setTrainingType(trainingType);
+            TrainingTitle trainingTitle = trainingTitleRepo.findByTrainingTitleName(trainingDataFormatter.getTrainingTitle());
+            if (trainingTitle == null) {
+                TrainingTitle tt = new TrainingTitle();
+                tt.setTrainingTitleName(trainingDataFormatter.getTrainingTitle());
+                tt.setTrainingType(trainingType);
+                trainingTitle = trainingTitleRepo.save(tt);
+            }
+            training.setTrainingTitle(trainingTitle);
+            training.setModalite(trainingDataFormatter.getModalite());
+            training.setDureeParHeure(trainingDataFormatter.getDph());
+            training.setDateDebut(trainingDataFormatter.getDdb());
+            training.setDateFin(trainingDataFormatter.getDdf());
+            training.setEva(trainingDataFormatter.isEva());
+            training.setFormatteur(trainingDataFormatter.getFormatteur());
+            training.setPrestataire(trainingDataFormatter.getPrestataire());
+            List<Employee> employees = new ArrayList<>();
+            for (Long l : trainingDataFormatter.getMatricules()) {
+                Employee employee = employeeRepo.findByMatricule(l);
+                if (employee != null) {
+                    employees.add(employee);
+                }
+            }
+            training.setEmployees(employees);
+            trainingRepo.save(training);
+        }else {
+            List<Employee> employees = trainingf.getEmployees();
+            for (Long l : trainingDataFormatter.getMatricules()) {
+                Employee employee = employeeRepo.findByMatricule(l);
+                if (employee != null) {
+                    employees.add(employee);
+                }
+            }
+            trainingf.setEmployees(employees);
+            trainingRepo.save(trainingf);
         }
-        training.setEmployees(employees);
-        trainingRepo.save(training);
+
     }
 
     public List<TrainingDataFormatter> formatData(List<TrainingFromExcel> trainingFromExcels) {
