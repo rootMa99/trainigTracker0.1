@@ -57,17 +57,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     private static TrainingFromExcel getTrainingFromExcel(Training t) {
-        TrainingFromExcel trainingFromExcel=new TrainingFromExcel();
-        trainingFromExcel.setTrainingId(t.getTrainingId());
-        trainingFromExcel.setTrainingTitle(t.getTrainingTitle().getTrainingTitleName());
-        trainingFromExcel.setTrainingType(t.getTrainingType().getTtName());
-        trainingFromExcel.setModalite(t.getModalite());
-        trainingFromExcel.setDph(t.getDureeParHeure());
-        trainingFromExcel.setDdb(t.getDateDebut());
-        trainingFromExcel.setDdf(t.getDateFin());
-        trainingFromExcel.setPrestataire(t.getPrestataire());
-        trainingFromExcel.setFormatteur(t.getFormatteur());
-        trainingFromExcel.setEva(t.isEva());
+        TrainingFromExcel trainingFromExcel = getFromExcel(t);
         return trainingFromExcel;
     }
 
@@ -156,9 +146,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         Crew crew= crewRepo.findByCrewName(crewName);
         CrewDto crewDto=new CrewDto();
         crewDto.setCrewName(crew.getCrewName());
-        List<EmployeeRest> employeeRests=new ArrayList<>();
+        List<EmployeeModel> employeeRests=new ArrayList<>();
         for (Employee e: crew.getEmployees()){
-            EmployeeRest em=new EmployeeRest();
+            EmployeeModel em=new EmployeeModel();
             em.setMatricule(e.getMatricule());
             em.setNom(e.getNom());
             em.setPrenom(e.getPrenom());
@@ -171,9 +161,30 @@ public class EmployeeServiceImpl implements EmployeeService {
             em.setCoordinator(e.getCoordinator().getName());
             em.setShiftLeader(e.getShiftLeader().getName());
             em.setTeamLeader(e.getTeamLeader().getName());
+            List<TrainingFromExcel> trainingFromExcels=new ArrayList<>();
+            for (Training t:e.getTrainings()){
+                TrainingFromExcel trainingFromExcel = getFromExcel(t);
+                trainingFromExcels.add(trainingFromExcel);
+            }
+            em.setTrainingFromExcels(trainingFromExcels);
             employeeRests.add(em);
         }
         crewDto.setEmployeeRests(employeeRests);
         return crewDto;
+    }
+
+    private static TrainingFromExcel getFromExcel(Training t) {
+        TrainingFromExcel trainingFromExcel=new TrainingFromExcel();
+        trainingFromExcel.setTrainingId(t.getTrainingId());
+        trainingFromExcel.setTrainingTitle(t.getTrainingTitle().getTrainingTitleName());
+        trainingFromExcel.setTrainingType(t.getTrainingType().getTtName());
+        trainingFromExcel.setModalite(t.getModalite());
+        trainingFromExcel.setDph(t.getDureeParHeure());
+        trainingFromExcel.setDdb(t.getDateDebut());
+        trainingFromExcel.setDdf(t.getDateFin());
+        trainingFromExcel.setPrestataire(t.getPrestataire());
+        trainingFromExcel.setFormatteur(t.getFormatteur());
+        trainingFromExcel.setEva(t.isEva());
+        return trainingFromExcel;
     }
 }

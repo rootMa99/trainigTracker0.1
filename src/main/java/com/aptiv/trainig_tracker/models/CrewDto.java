@@ -13,5 +13,5 @@ import java.util.List;
 @Setter
 public class CrewDto {
     private String crewName;
-    private List<EmployeeRest> employeeRests;
+    private List<EmployeeModel> employeeRests;
 }
