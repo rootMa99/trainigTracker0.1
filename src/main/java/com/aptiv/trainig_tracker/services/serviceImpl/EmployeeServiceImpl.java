@@ -1,10 +1,7 @@
 package com.aptiv.trainig_tracker.services.serviceImpl;
 
 import com.aptiv.trainig_tracker.domain.*;
-import com.aptiv.trainig_tracker.models.DataExcelEmployee;
-import com.aptiv.trainig_tracker.models.EmployeeModel;
-import com.aptiv.trainig_tracker.models.TrainingDataFormatter;
-import com.aptiv.trainig_tracker.models.TrainingFromExcel;
+import com.aptiv.trainig_tracker.models.*;
 import com.aptiv.trainig_tracker.repositories.*;
 import com.aptiv.trainig_tracker.services.EmployeeService;
 import com.aptiv.trainig_tracker.services.UploadEmployeeData;
@@ -153,5 +150,30 @@ public class EmployeeServiceImpl implements EmployeeService {
                 throw new RuntimeException(e);
             }
         }
+    }
+    @Override
+    public CrewDto getCrewName(String crewName){
+        Crew crew= crewRepo.findByCrewName(crewName);
+        CrewDto crewDto=new CrewDto();
+        crewDto.setCrewName(crew.getCrewName());
+        List<EmployeeRest> employeeRests=new ArrayList<>();
+        for (Employee e: crew.getEmployees()){
+            EmployeeRest em=new EmployeeRest();
+            em.setMatricule(e.getMatricule());
+            em.setNom(e.getNom());
+            em.setPrenom(e.getPrenom());
+            em.setCategory(e.getCategory().getCategoryName());
+            em.setFonction(e.getFonctionEntreprise());
+            em.setDepartment(e.getDepartment().getDepartmentName());
+            em.setPoste(e.getPoste().getPosteName());
+            em.setCrew(e.getCrew().getCrewName());
+            em.setFamily(e.getFamily().getFamilyName());
+            em.setCoordinator(e.getCoordinator().getName());
+            em.setShiftLeader(e.getShiftLeader().getName());
+            em.setTeamLeader(e.getTeamLeader().getName());
+            employeeRests.add(em);
+        }
+        crewDto.setEmployeeRests(employeeRests);
+        return crewDto;
     }
 }

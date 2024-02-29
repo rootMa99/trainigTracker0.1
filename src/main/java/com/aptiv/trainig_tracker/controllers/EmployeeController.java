@@ -1,5 +1,6 @@
 package com.aptiv.trainig_tracker.controllers;
 
+import com.aptiv.trainig_tracker.models.CrewDto;
 import com.aptiv.trainig_tracker.models.EmployeeModel;
 import com.aptiv.trainig_tracker.services.EmployeeService;
 import lombok.AllArgsConstructor;
@@ -17,5 +18,9 @@ public class EmployeeController {
     @GetMapping(path ="/employee" )
     public EmployeeModel getEmployeeData(@RequestParam long matricule){
         return employeeService.getEmployeeData(matricule);
+    }
+    @GetMapping(path = "/crewByName")
+    public CrewDto getCrewsByName(@RequestParam String crewName ){
+        return employeeService.getCrewName(crewName);
     }
 }
