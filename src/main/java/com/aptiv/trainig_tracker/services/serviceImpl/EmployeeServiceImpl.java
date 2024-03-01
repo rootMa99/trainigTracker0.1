@@ -51,7 +51,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 trainingFromExcels.add(trainingFromExcel);
             }
             employeeModel.setTrainingFromExcels(trainingFromExcels);
-        }
+        }else throw new RuntimeException("No training Found");
         return employeeModel;
     }
 
