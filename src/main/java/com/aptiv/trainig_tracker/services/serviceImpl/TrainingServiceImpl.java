@@ -50,6 +50,7 @@ public class TrainingServiceImpl implements TrainingService {
                             trainingRepo.findByTrainingTypeTtNameAndTrainingTitleTrainingTitleNameAndDateDebutBetween(tfe.getTrainingType(),
                                     tfe.getTrainingTitle(), tfe.getDdb(),
                                     tfe.getDdf());
+                    System.out.println(trainingf);
                     if (trainingf == null) {
                         Training training = new Training();
                         training.setTrainingId(utils.getGeneratedId(22));
@@ -186,13 +187,13 @@ public class TrainingServiceImpl implements TrainingService {
                 if (tfe.getDdb() != null && tfe.getDdf() != null && tfe.getDph() != null) {
                     for (TrainingDataFormatter tf : trainingDataFormatters) {
                         if (tf.getTrainingTitle().equals(tfe.getTrainingTitle()) && tf.getTrainingType().equals(tfe.getTrainingType())
-                                && tf.getDdb().equals(tfe.getDdb()) && tf.getDdf().equals(tfe.getDdf())) {
+                                &&  tf.getDdb().compareTo(tfe.getDdb()) == 0 &&
+                                tf.getDdf().compareTo(tfe.getDdf()) == 0) {
                             flag = true;
                             tf.getMatricules().add(tfe.getMatricule());
                         }
                     }
                     if (!flag) {
-
                         TrainingDataFormatter tdf = new TrainingDataFormatter();
                         tdf.setTrainingId(utils.getGeneratedId(22));
                         tdf.setModalite(tfe.getModalite());
