@@ -108,49 +108,64 @@ public class TrainingServiceImpl implements TrainingService {
             }
         }
     }
-
     public List<TrainingDataFormatter> formatData(List<TrainingFromExcel> trainingFromExcels) {
         List<TrainingDataFormatter> trainingDataFormatters = new ArrayList<>();
+        for (TrainingFromExcel tfe : trainingFromExcels) {
+            if (trainingDataFormatters.isEmpty()) {
+                TrainingDataFormatter tdf = new TrainingDataFormatter();
+                tdf.setTrainingId(utils.getGeneratedId(22));
+                tdf.setModalite(tfe.getModalite());
+                tdf.setDph(tfe.getDph());
+                tdf.setDdb(tfe.getDdb());
+                tdf.setDdf(tfe.getDdf());
+                tdf.setPrestataire(tfe.getPrestataire());
+                tdf.setFormatteur(tfe.getFormatteur());
+                tdf.setEva(tfe.isEva());
+                tdf.setTrainingTitle(tfe.getTrainingTitle());
+                tdf.setTrainingType(tfe.getTrainingType());
+                List<Long> matricules = new ArrayList<>();
+                matricules.add(tfe.getMatricule());
+                tdf.setMatricules(matricules);
+                trainingDataFormatters.add(tdf);
+            } else {
+                boolean flag = false;
+                if (tfe.getDdb() != null && tfe.getDdf() != null && tfe.getDph() != null) {
+                    for (TrainingDataFormatter tf : trainingDataFormatters) {
+                        if (tf.getTrainingTitle().trim().equals(tfe.getTrainingTitle().trim()) && tf.getTrainingType().trim().equals(tfe.getTrainingType().trim())
+                                &&  tf.getDdb().compareTo(tfe.getDdb()) == 0 &&
+                                tf.getDdf().compareTo(tfe.getDdf()) == 0) {
+                            if (!tfe.getTrainingTitle().equals("Recyclage après shut down")){
+                                System.out.println("matching  "+ tfe.getTrainingTitle()+" "+ tfe.getDdb()+" "+ tfe.getTrainingTitle()+" "+ tfe.getDdf());
+                            }
 
-        trainingFromExcels.forEach(training -> {
-            if (training.getDdb() != null && training.getDdf() != null && training.getDph() != null) {
-
-
-                boolean found = trainingDataFormatters.stream()
-                        .anyMatch(formatter -> Objects.equals(formatter.getTrainingTitle(), training.getTrainingTitle().trim()) &&
-                                Objects.equals(formatter.getTrainingType(), training.getTrainingType().trim()) &&
-                                Objects.equals(formatter.getDdb(), training.getDdb()) &&
-                                Objects.equals(formatter.getDdf(), training.getDdf()));
-
-                if (found) {
-                    trainingDataFormatters.stream()
-                            .filter(formatter -> Objects.equals(formatter.getTrainingTitle(), training.getTrainingTitle().trim()) &&
-                                    Objects.equals(formatter.getTrainingType(), training.getTrainingType().trim()) &&
-                                    Objects.equals(formatter.getDdb(), training.getDdb()) &&
-                                    Objects.equals(formatter.getDdf(), training.getDdf()))
-                            .findFirst()
-                            .ifPresent(formatter -> formatter.getMatricules().add(training.getMatricule()));
-                } else {
-
-                    TrainingDataFormatter formatter = new TrainingDataFormatter();
-                    formatter.setTrainingId(utils.getGeneratedId(22));
-                    formatter.setModalite(training.getModalite());
-                    formatter.setDph(training.getDph());
-                    formatter.setDdb(training.getDdb());
-                    formatter.setDdf(training.getDdf());
-                    formatter.setPrestataire(training.getPrestataire());
-                    formatter.setFormatteur(training.getFormatteur());
-                    formatter.setEva(training.isEva());
-                    formatter.setTrainingTitle(training.getTrainingTitle());
-                    formatter.setTrainingType(training.getTrainingType());
-                    List<Long> matricules = new ArrayList<>();
-                    matricules.add(training.getMatricule());
-                    formatter.setMatricules(matricules);
-                    trainingDataFormatters.add(formatter);
+                            flag = true;
+                            tf.getMatricules().add(tfe.getMatricule());
+                        }
+                        //System.out.println("test out "+tf.getTrainingTitle()+" "+ tf.getDdb());
+                    }
+                    //System.out.println(flag+" "+tfe.getTrainingTitle()+" "+ tfe.getDdb()+" "+ tfe.getTrainingTitle
+                    // ()+" "+ tfe.getDdf());
+                    if (!flag) {
+                        System.out.println("not match "+tfe.getTrainingTitle()+" "+ tfe.getDdb()+" "+ tfe.getTrainingTitle()+" "+ tfe.getDdf());
+                        TrainingDataFormatter tdf = new TrainingDataFormatter();
+                        tdf.setTrainingId(utils.getGeneratedId(22));
+                        tdf.setModalite(tfe.getModalite());
+                        tdf.setDph(tfe.getDph());
+                        tdf.setDdb(tfe.getDdb());
+                        tdf.setDdf(tfe.getDdf());
+                        tdf.setPrestataire(tfe.getPrestataire());
+                        tdf.setFormatteur(tfe.getFormatteur());
+                        tdf.setEva(tfe.isEva());
+                        tdf.setTrainingTitle(tfe.getTrainingTitle());
+                        tdf.setTrainingType(tfe.getTrainingType());
+                        List<Long> matricules = new ArrayList<>();
+                        matricules.add(tfe.getMatricule());
+                        tdf.setMatricules(matricules);
+                        trainingDataFormatters.add(tdf);
+                    }
                 }
             }
-        });
-
+        }
         return trainingDataFormatters;
     }
 
