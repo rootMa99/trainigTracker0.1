@@ -31,9 +31,6 @@ public class TrainingServiceImpl implements TrainingService {
     TrainingTypeRepo trainingTypeRepo;
     TrainingTitleRepo trainingTitleRepo;
     TrainingRepo trainingRepo;
-
-
-
     @Override
     public void saveTrainingDataToDb(MultipartFile file) {
         if (UploadEmployeeData.isValidFormat(file)) {
