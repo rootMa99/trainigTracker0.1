@@ -109,46 +109,44 @@ public class TrainingServiceImpl implements TrainingService {
         }
     }
 
-    public List<TrainingDataFormatter> formatData(List<TrainingFromExcel> dataFromExcels) {
-        List<TrainingDataFormatter> dataFormatters = new ArrayList<>();
+    public List<TrainingDataFormatter> formatData(List<TrainingFromExcel> trainingFromExcels) {
+        List<TrainingDataFormatter> trainingDataFormatters = new ArrayList<>();
 
-        dataFromExcels.forEach(data -> {
-            boolean found = dataFormatters.stream()
-                    .anyMatch(formatter -> Objects.equals(formatter.getTrainingTitle(), data.getTrainingTitle()) &&
-                            Objects.equals(formatter.getTrainingType(), data.getTrainingType()) &&
-                            Objects.equals(formatter.getDdb(), data.getDdb()) &&
-                            Objects.equals(formatter.getDdf(), data.getDdf()));
+        trainingFromExcels.forEach(training -> {
+            boolean found = trainingDataFormatters.stream()
+                    .anyMatch(formatter -> Objects.equals(formatter.getTrainingTitle(), training.getTrainingTitle().trim()) &&
+                            Objects.equals(formatter.getTrainingType(), training.getTrainingType().trim()) &&
+                            Objects.equals(formatter.getDdb(), training.getDdb()) &&
+                            Objects.equals(formatter.getDdf(), training.getDdf()));
 
             if (found) {
-                dataFormatters.stream()
-                        .filter(formatter -> Objects.equals(formatter.getTrainingTitle(), data.getTrainingTitle()) &&
-                                Objects.equals(formatter.getTrainingType(), data.getTrainingType()) &&
-                                Objects.equals(formatter.getDdb(), data.getDdb()) &&
-                                Objects.equals(formatter.getDdf(), data.getDdf()))
+                trainingDataFormatters.stream()
+                        .filter(formatter -> Objects.equals(formatter.getTrainingTitle(), training.getTrainingTitle().trim()) &&
+                                Objects.equals(formatter.getTrainingType(), training.getTrainingType().trim()) &&
+                                Objects.equals(formatter.getDdb(), training.getDdb()) &&
+                                Objects.equals(formatter.getDdf(), training.getDdf()))
                         .findFirst()
-                        .ifPresent(formatter -> formatter.getMatricules().add(data.getMatricule()));
+                        .ifPresent(formatter -> formatter.getMatricules().add(training.getMatricule()));
             } else {
-                if (data.getDdb() != null && data.getDdf() != null && data.getDph() != null) {
-                    TrainingDataFormatter formatter = new TrainingDataFormatter();
-                    formatter.setTrainingId(utils.getGeneratedId(22));
-                    formatter.setModalite(data.getModalite());
-                    formatter.setDph(data.getDph());
-                    formatter.setDdb(data.getDdb());
-                    formatter.setDdf(data.getDdf());
-                    formatter.setPrestataire(data.getPrestataire());
-                    formatter.setFormatteur(data.getFormatteur());
-                    formatter.setEva(data.isEva());
-                    formatter.setTrainingTitle(data.getTrainingTitle());
-                    formatter.setTrainingType(data.getTrainingType());
-                    List<Long> matricules = new ArrayList<>();
-                    matricules.add(data.getMatricule());
-                    formatter.setMatricules(matricules);
-                    dataFormatters.add(formatter);
-                }
+                TrainingDataFormatter formatter = new TrainingDataFormatter();
+                formatter.setTrainingId(utils.getGeneratedId(22));
+                formatter.setModalite(training.getModalite());
+                formatter.setDph(training.getDph());
+                formatter.setDdb(training.getDdb());
+                formatter.setDdf(training.getDdf());
+                formatter.setPrestataire(training.getPrestataire());
+                formatter.setFormatteur(training.getFormatteur());
+                formatter.setEva(training.isEva());
+                formatter.setTrainingTitle(training.getTrainingTitle());
+                formatter.setTrainingType(training.getTrainingType());
+                List<Long> matricules = new ArrayList<>();
+                matricules.add(training.getMatricule());
+                formatter.setMatricules(matricules);
+                trainingDataFormatters.add(formatter);
             }
         });
 
-        return dataFormatters;
+        return trainingDataFormatters;
     }
 
     @Override
