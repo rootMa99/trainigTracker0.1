@@ -113,36 +113,41 @@ public class TrainingServiceImpl implements TrainingService {
         List<TrainingDataFormatter> trainingDataFormatters = new ArrayList<>();
 
         trainingFromExcels.forEach(training -> {
-            boolean found = trainingDataFormatters.stream()
-                    .anyMatch(formatter -> Objects.equals(formatter.getTrainingTitle(), training.getTrainingTitle().trim()) &&
-                            Objects.equals(formatter.getTrainingType(), training.getTrainingType().trim()) &&
-                            Objects.equals(formatter.getDdb(), training.getDdb()) &&
-                            Objects.equals(formatter.getDdf(), training.getDdf()));
+            if (training.getDdb() != null && training.getDdf() != null && training.getDph() != null) {
 
-            if (found) {
-                trainingDataFormatters.stream()
-                        .filter(formatter -> Objects.equals(formatter.getTrainingTitle(), training.getTrainingTitle().trim()) &&
+
+                boolean found = trainingDataFormatters.stream()
+                        .anyMatch(formatter -> Objects.equals(formatter.getTrainingTitle(), training.getTrainingTitle().trim()) &&
                                 Objects.equals(formatter.getTrainingType(), training.getTrainingType().trim()) &&
                                 Objects.equals(formatter.getDdb(), training.getDdb()) &&
-                                Objects.equals(formatter.getDdf(), training.getDdf()))
-                        .findFirst()
-                        .ifPresent(formatter -> formatter.getMatricules().add(training.getMatricule()));
-            } else {
-                TrainingDataFormatter formatter = new TrainingDataFormatter();
-                formatter.setTrainingId(utils.getGeneratedId(22));
-                formatter.setModalite(training.getModalite());
-                formatter.setDph(training.getDph());
-                formatter.setDdb(training.getDdb());
-                formatter.setDdf(training.getDdf());
-                formatter.setPrestataire(training.getPrestataire());
-                formatter.setFormatteur(training.getFormatteur());
-                formatter.setEva(training.isEva());
-                formatter.setTrainingTitle(training.getTrainingTitle());
-                formatter.setTrainingType(training.getTrainingType());
-                List<Long> matricules = new ArrayList<>();
-                matricules.add(training.getMatricule());
-                formatter.setMatricules(matricules);
-                trainingDataFormatters.add(formatter);
+                                Objects.equals(formatter.getDdf(), training.getDdf()));
+
+                if (found) {
+                    trainingDataFormatters.stream()
+                            .filter(formatter -> Objects.equals(formatter.getTrainingTitle(), training.getTrainingTitle().trim()) &&
+                                    Objects.equals(formatter.getTrainingType(), training.getTrainingType().trim()) &&
+                                    Objects.equals(formatter.getDdb(), training.getDdb()) &&
+                                    Objects.equals(formatter.getDdf(), training.getDdf()))
+                            .findFirst()
+                            .ifPresent(formatter -> formatter.getMatricules().add(training.getMatricule()));
+                } else {
+
+                    TrainingDataFormatter formatter = new TrainingDataFormatter();
+                    formatter.setTrainingId(utils.getGeneratedId(22));
+                    formatter.setModalite(training.getModalite());
+                    formatter.setDph(training.getDph());
+                    formatter.setDdb(training.getDdb());
+                    formatter.setDdf(training.getDdf());
+                    formatter.setPrestataire(training.getPrestataire());
+                    formatter.setFormatteur(training.getFormatteur());
+                    formatter.setEva(training.isEva());
+                    formatter.setTrainingTitle(training.getTrainingTitle());
+                    formatter.setTrainingType(training.getTrainingType());
+                    List<Long> matricules = new ArrayList<>();
+                    matricules.add(training.getMatricule());
+                    formatter.setMatricules(matricules);
+                    trainingDataFormatters.add(formatter);
+                }
             }
         });
 
