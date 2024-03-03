@@ -100,7 +100,6 @@ public class TrainingServiceImpl implements TrainingService {
                             trainingRepo.save(trainingf);
                         }
                     }
-
                 }
                 trainingRepo.saveAll(trainings);
             } catch (IOException e) {
