@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -51,7 +52,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 trainingFromExcels.add(trainingFromExcel);
             }
             employeeModel.setTrainingFromExcels(trainingFromExcels);
-        }else throw new RuntimeException("No training Found");
+        } else throw new RuntimeException("No training Found");
         return employeeModel;
     }
 
@@ -62,81 +63,178 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void saveEmployeeDataToDb(MultipartFile file) {
-
         if (UploadEmployeeData.isValidFormat(file)) {
             try {
                 List<DataExcelEmployee> dataExcelEmployees = UploadEmployeeData.getEmployeesDataFromExcel(file.getInputStream());
-                List<Employee> employees = new ArrayList<>();
                 for (DataExcelEmployee dee : dataExcelEmployees) {
-                    Employee employee = new Employee();
-                    employee.setMatricule(dee.getMatricule());
-                    employee.setNom(dee.getNom());
-                    employee.setPrenom(dee.getPrenom());
-                    employee.setFonctionEntreprise(dee.getFonction());
-                    Category category = categoryRepo.findByCategoryName(dee.getCategory());
-                    if (category == null) {
-                        Category ct = new Category();
-                        ct.setCategoryName(dee.getCategory());
-                        category = categoryRepo.save(ct);
+                    Employee existingEmployee = employeeRepo.findByMatricule(dee.getMatricule());
+                    if (existingEmployee != null) {
+                        updateEmployee(existingEmployee, dee);
+                    } else {
+                        saveNewEmployee(dee);
                     }
-                    employee.setCategory(category);
-                    Crew crew = crewRepo.findByCrewName(dee.getCrew());
-                    if (crew == null) {
-                        Crew cr = new Crew();
-                        cr.setCrewName(dee.getCrew());
-                        crew = crewRepo.save(cr);
-                    }
-                    employee.setCrew(crew);
-                    Poste poste = posteRepo.findByPosteName(dee.getPoste());
-                    if (poste == null) {
-                        Poste ps = new Poste();
-                        ps.setPosteName(dee.getPoste());
-                        poste = posteRepo.save(ps);
-                    }
-                    employee.setPoste(poste);
-                    Family family = familyRepo.findByFamilyName(dee.getFamily());
-                    if (family == null) {
-                        Family fm = new Family();
-                        fm.setFamilyName(dee.getFamily());
-                        family = familyRepo.save(fm);
-                    }
-                    employee.setFamily(family);
-                    Department department = departmentRepo.findByDepartmentName(dee.getDepartment());
-                    if (department == null) {
-                        Department dprt = new Department();
-                        dprt.setDepartmentName(dee.getDepartment());
-                        department = departmentRepo.save(dprt);
-                    }
-                    employee.setDepartment(department);
-                    Coordinator coordinator = coordinatorRepo.findByName(dee.getCoordinator());
-                    if (coordinator == null) {
-                        Coordinator c = new Coordinator();
-                        c.setName(dee.getCoordinator());
-                        coordinator = coordinatorRepo.save(c);
-                    }
-                    employee.setCoordinator(coordinator);
-                    ShiftLeader shiftLeader = shiftLeaderRepo.findByName(dee.getShiftLeader());
-                    if (shiftLeader == null) {
-                        ShiftLeader sl = new ShiftLeader();
-                        sl.setName(dee.getShiftLeader());
-                        shiftLeader = shiftLeaderRepo.save(sl);
-                    }
-                    employee.setShiftLeader(shiftLeader);
-                    TeamLeader teamLeader = teamLeaderRepo.findByName(dee.getTeamLeader());
-                    if (teamLeader == null) {
-                        TeamLeader tl = new TeamLeader();
-                        tl.setName(dee.getTeamLeader());
-                        teamLeader = teamLeaderRepo.save(tl);
-                    }
-                    employee.setTeamLeader(teamLeader);
-                    employees.add(employee);
                 }
-                employeeRepo.saveAll(employees);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
     }
+
+    private void saveNewEmployee(DataExcelEmployee dee) {
+        Employee employee = new Employee();
+        employee.setMatricule(dee.getMatricule());
+        employee.setNom(dee.getNom());
+        employee.setPrenom(dee.getPrenom());
+        employee.setFonctionEntreprise(dee.getFonction());
+        Category category = categoryRepo.findByCategoryName(dee.getCategory());
+        if (category == null) {
+            Category ct = new Category();
+            ct.setCategoryName(dee.getCategory());
+            category = categoryRepo.save(ct);
+        }
+        employee.setCategory(category);
+        Crew crew = crewRepo.findByCrewName(dee.getCrew());
+        if (crew == null) {
+            Crew cr = new Crew();
+            cr.setCrewName(dee.getCrew());
+            crew = crewRepo.save(cr);
+        }
+        employee.setCrew(crew);
+        Poste poste = posteRepo.findByPosteName(dee.getPoste());
+        if (poste == null) {
+            Poste ps = new Poste();
+            ps.setPosteName(dee.getPoste());
+            poste = posteRepo.save(ps);
+        }
+        employee.setPoste(poste);
+        Family family = familyRepo.findByFamilyName(dee.getFamily());
+        if (family == null) {
+            Family fm = new Family();
+            fm.setFamilyName(dee.getFamily());
+            family = familyRepo.save(fm);
+        }
+        employee.setFamily(family);
+        Department department = departmentRepo.findByDepartmentName(dee.getDepartment());
+        if (department == null) {
+            Department dprt = new Department();
+            dprt.setDepartmentName(dee.getDepartment());
+            department = departmentRepo.save(dprt);
+        }
+        employee.setDepartment(department);
+        Coordinator coordinator = coordinatorRepo.findByName(dee.getCoordinator());
+        if (coordinator == null) {
+            Coordinator c = new Coordinator();
+            c.setName(dee.getCoordinator());
+            coordinator = coordinatorRepo.save(c);
+        }
+        employee.setCoordinator(coordinator);
+        ShiftLeader shiftLeader = shiftLeaderRepo.findByName(dee.getShiftLeader());
+        if (shiftLeader == null) {
+            ShiftLeader sl = new ShiftLeader();
+            sl.setName(dee.getShiftLeader());
+            shiftLeader = shiftLeaderRepo.save(sl);
+        }
+        employee.setShiftLeader(shiftLeader);
+        TeamLeader teamLeader = teamLeaderRepo.findByName(dee.getTeamLeader());
+        if (teamLeader == null) {
+            TeamLeader tl = new TeamLeader();
+            tl.setName(dee.getTeamLeader());
+            teamLeader = teamLeaderRepo.save(tl);
+        }
+        employee.setTeamLeader(teamLeader);
+        saveEmployee(employee);
+    }
+
+    private void updateEmployee(Employee existingEmployee, DataExcelEmployee dee) {
+        if (!Objects.equals(existingEmployee.getNom(), dee.getNom())) {
+            existingEmployee.setNom(dee.getNom());
+        }
+        if (!Objects.equals(existingEmployee.getPrenom(), dee.getPrenom())) {
+            existingEmployee.setPrenom(dee.getPrenom());
+        }
+        if (!Objects.equals(existingEmployee.getFonctionEntreprise(), dee.getFonction())) {
+            existingEmployee.setFonctionEntreprise(dee.getFonction());
+        }
+        if (!Objects.equals(existingEmployee.getCategory().getCategoryName(), dee.getCategory())) {
+            Category category = categoryRepo.findByCategoryName(dee.getCategory());
+            if (category == null) {
+                Category ct = new Category();
+                ct.setCategoryName(dee.getCategory());
+                category = categoryRepo.save(ct);
+            }
+            existingEmployee.setCategory(category);
+
+        }
+        if (!Objects.equals(existingEmployee.getCrew().getCrewName(), dee.getCrew())) {
+            Crew crew = crewRepo.findByCrewName(dee.getCrew());
+            if (crew == null) {
+                Crew cr = new Crew();
+                cr.setCrewName(dee.getCrew());
+                crew = crewRepo.save(cr);
+            }
+            existingEmployee.setCrew(crew);
+        }
+        if (!Objects.equals(existingEmployee.getPoste().getPosteName(), dee.getPoste())) {
+            Poste poste = posteRepo.findByPosteName(dee.getPoste());
+            if (poste == null) {
+                Poste ps = new Poste();
+                ps.setPosteName(dee.getPoste());
+                poste = posteRepo.save(ps);
+            }
+            existingEmployee.setPoste(poste);
+        }
+        if (!Objects.equals(existingEmployee.getFamily().getFamilyName(), dee.getFamily())) {
+            Family family = familyRepo.findByFamilyName(dee.getFamily());
+            if (family == null) {
+                Family fm = new Family();
+                fm.setFamilyName(dee.getFamily());
+                family = familyRepo.save(fm);
+            }
+            existingEmployee.setFamily(family);
+        }
+        if (!Objects.equals(existingEmployee.getDepartment().getDepartmentName(), dee.getDepartment())) {
+            Department department = departmentRepo.findByDepartmentName(dee.getDepartment());
+            if (department == null) {
+                Department dprt = new Department();
+                dprt.setDepartmentName(dee.getDepartment());
+                department = departmentRepo.save(dprt);
+            }
+            existingEmployee.setDepartment(department);
+        }
+        if (!Objects.equals(existingEmployee.getCoordinator().getName(), dee.getCoordinator())) {
+            Coordinator coordinator = coordinatorRepo.findByName(dee.getCoordinator());
+            if (coordinator == null) {
+                Coordinator c = new Coordinator();
+                c.setName(dee.getCoordinator());
+                coordinator = coordinatorRepo.save(c);
+            }
+            existingEmployee.setCoordinator(coordinator);
+        }
+        if (!Objects.equals(existingEmployee.getShiftLeader().getName(), dee.getShiftLeader())) {
+            ShiftLeader shiftLeader = shiftLeaderRepo.findByName(dee.getShiftLeader());
+            if (shiftLeader == null) {
+                ShiftLeader sl = new ShiftLeader();
+                sl.setName(dee.getShiftLeader());
+                shiftLeader = shiftLeaderRepo.save(sl);
+            }
+            existingEmployee.setShiftLeader(shiftLeader);
+        }
+        if (!Objects.equals(existingEmployee.getTeamLeader().getName(), dee.getTeamLeader())) {
+            TeamLeader teamLeader = teamLeaderRepo.findByName(dee.getTeamLeader());
+            if (teamLeader == null) {
+                TeamLeader tl = new TeamLeader();
+                tl.setName(dee.getTeamLeader());
+                teamLeader = teamLeaderRepo.save(tl);
+            }
+            existingEmployee.setTeamLeader(teamLeader);
+        }
+        saveEmployee(existingEmployee);
+    }
+
+    private void saveEmployee(Employee employee) {
+        employeeRepo.save(employee);
+    }
+
 
     @Override
     public CrewDto getCrewName(String crewName) {
