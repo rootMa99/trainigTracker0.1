@@ -18,10 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -38,79 +36,110 @@ public class TrainingServiceImpl implements TrainingService {
                 List<TrainingFromExcel> trainingFromExcels =
                         UploadEmployeeData.getTrainingDataFromExcel(file.getInputStream());
                 List<TrainingDataFormatter> trainingDataFormatters = formatData(trainingFromExcels);
-                List<Training> trainings = new ArrayList<>();
-                for (TrainingDataFormatter tfe : trainingDataFormatters) {
-                    if (tfe.getTrainingTitle() == null || tfe.getTrainingType() == null || tfe.getModalite() == null) {
-                        continue;
-                    }
-                    //System.out.println(tfe.getTrainingType() + " " +
-                    //      tfe.getTrainingTitle() + " " + tfe.getDdb() + " " +
-                    //    tfe.getDdf());
-                    Training trainingf =
-                            trainingRepo.findByTrainingTypeTtNameAndTrainingTitleTrainingTitleNameAndDateDebutBetween(tfe.getTrainingType(),
-                                    tfe.getTrainingTitle(), tfe.getDdb(),
-                                    tfe.getDdf());
-                    //System.out.println(trainingf);
-                    if (trainingf == null) {
-                        Training training = new Training();
-                        training.setTrainingId(utils.getGeneratedId(22));
-                        TrainingType trainingType = trainingTypeRepo.findByTtName(tfe.getTrainingType());
-                        if (trainingType == null) {
-                            TrainingType tt = new TrainingType();
-                            tt.setTtName(tfe.getTrainingType());
-                            trainingType = trainingTypeRepo.save(tt);
-                        }
-                        training.setTrainingType(trainingType);
-                        TrainingTitle trainingTitle = trainingTitleRepo.findByTrainingTitleName(tfe.getTrainingTitle());
-                        if (trainingTitle == null) {
-                            TrainingTitle tt = new TrainingTitle();
-                            tt.setTrainingTitleName(tfe.getTrainingTitle());
-                            tt.setTrainingType(trainingType);
-                            trainingTitle = trainingTitleRepo.save(tt);
-                        }
-                        training.setTrainingTitle(trainingTitle);
-                        training.setModalite(tfe.getModalite());
-                        training.setDureeParHeure(tfe.getDph());
-                        training.setDateDebut(tfe.getDdb());
-                        training.setDateFin(tfe.getDdf());
-                        training.setEva(tfe.isEva());
-                        training.setFormatteur(tfe.getFormatteur());
-                        training.setPrestataire(tfe.getPrestataire());
-                        List<Employee> employees = new ArrayList<>();
-                        for (Long l : tfe.getMatricules()) {
-                            Employee employee = employeeRepo.findByMatricule(l);
-                            if (employee != null) {
-                                employees.add(employee);
+
+                List<Training> trainings = trainingDataFormatters.stream()
+                        .filter(tfe -> tfe.getTrainingTitle() != null && tfe.getTrainingType() != null && tfe.getModalite() != null)
+                        .map(tfe -> {
+                            List<Training> existingTrainings =
+                                    trainingRepo.findAllByTrainingTypeTtNameAndTrainingTitleTrainingTitleNameAndDateDebutBetween(
+                                    tfe.getTrainingType(), tfe.getTrainingTitle(), tfe.getDdb(), tfe.getDdf());
+                            if (existingTrainings.isEmpty()) {
+                                return createNewTraining(tfe);
+                            } else {
+                                return mergeExistingTrainings(existingTrainings, tfe);
                             }
-                        }
-                        training.setEmployees(employees);
-                        trainings.add(training);
-                    } else {
-                        System.out.println(trainingf + " " + trainingf.getTrainingTitle().getTrainingTitleName());
-                        if (trainingf.getEmployees().size() != tfe.getMatricules().size()) {
-                            List<Employee> employees = new ArrayList<>();
-                            for (Long l : tfe.getMatricules()) {
-                                Employee employee = employeeRepo.findByMatricule(l);
-                                if (employee != null) {
-                                    employees.add(employee);
-                                }
-                            }
-                            trainingf.setEmployees(employees);
-                            trainingRepo.save(trainingf);
-                        }
-                    }
-                }
+                        })
+                        .collect(Collectors.toList());
+
                 trainingRepo.saveAll(trainings);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
     }
+    private Training mergeExistingTrainings(List<Training> existingTrainings, TrainingDataFormatter tfe) {
+        Training mergedTraining = new Training();
+        mergedTraining.setTrainingId(utils.getGeneratedId(22));
+        mergedTraining.setTrainingType(existingTrainings.get(0).getTrainingType());
+        mergedTraining.setTrainingTitle(existingTrainings.get(0).getTrainingTitle());
+        mergedTraining.setModalite(existingTrainings.get(0).getModalite());
+        mergedTraining.setDureeParHeure(existingTrainings.get(0).getDureeParHeure());
+        mergedTraining.setDateDebut(existingTrainings.get(0).getDateDebut());
+        mergedTraining.setDateFin(existingTrainings.get(0).getDateFin());
+        mergedTraining.setEva(existingTrainings.get(0).isEva());
+        mergedTraining.setFormatteur(existingTrainings.get(0).getFormatteur());
+        mergedTraining.setPrestataire(existingTrainings.get(0).getPrestataire());
+
+        Set<Employee> allEmployeesSet = new HashSet<>();
+        existingTrainings.forEach(training -> allEmployeesSet.addAll(training.getEmployees()));
+
+        List<Employee> newEmployees = tfe.getMatricules().stream()
+                .map(employeeRepo::findByMatricule)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        allEmployeesSet.addAll(newEmployees);
+
+        List<Employee> allEmployees = new ArrayList<>(allEmployeesSet);
+        mergedTraining.setEmployees(allEmployees);
+
+        // Delete the existing trainings
+        existingTrainings.forEach(training -> {
+            training.getEmployees().clear();
+            trainingRepo.delete(training);
+        });
+
+        return mergedTraining;
+    }
+    private Training createNewTraining(TrainingDataFormatter tfe) {
+        Training training = new Training();
+        training.setTrainingId(utils.getGeneratedId(22));
+        TrainingType trainingType = trainingTypeRepo.findByTtName(tfe.getTrainingType());
+        if (trainingType == null) {
+            TrainingType tt = new TrainingType();
+            tt.setTtName(tfe.getTrainingType());
+            trainingType = trainingTypeRepo.save(tt);
+        }
+        training.setTrainingType(trainingType);
+        TrainingTitle trainingTitle = trainingTitleRepo.findByTrainingTitleName(tfe.getTrainingTitle());
+        if (trainingTitle == null) {
+            TrainingTitle tt = new TrainingTitle();
+            tt.setTrainingTitleName(tfe.getTrainingTitle());
+            tt.setTrainingType(trainingType);
+            trainingTitle = trainingTitleRepo.save(tt);
+        }
+        training.setTrainingTitle(trainingTitle);
+        training.setModalite(tfe.getModalite());
+        training.setDureeParHeure(tfe.getDph());
+        training.setDateDebut(tfe.getDdb());
+        training.setDateFin(tfe.getDdf());
+        training.setEva(tfe.isEva());
+        training.setFormatteur(tfe.getFormatteur());
+        training.setPrestataire(tfe.getPrestataire());
+        List<Employee> employees = tfe.getMatricules().stream()
+                .map(employeeRepo::findByMatricule)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        training.setEmployees(employees);
+        return training;
+    }
+
+    private void updateExistingTraining(TrainingDataFormatter tfe, Training trainingf) {
+        if (trainingf.getEmployees().size() != tfe.getMatricules().size()) {
+            List<Employee> employees = tfe.getMatricules().stream()
+                    .map(employeeRepo::findByMatricule)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+            trainingf.setEmployees(employees);
+            trainingRepo.save(trainingf);
+        }
+    }
+
     public List<TrainingDataFormatter> formatData(List<TrainingFromExcel> trainingFromExcels) {
         List<TrainingDataFormatter> trainingDataFormatters = new ArrayList<>();
 
         trainingFromExcels.forEach(tfe -> {
-            if (tfe.getDdb() != null && tfe.getDdf() != null && tfe.getDph() != null) {
+            if (isValidTraining(tfe)) {
                 boolean found = trainingDataFormatters.stream()
                         .anyMatch(tf -> Objects.equals(tf.getTrainingTitle().trim(), tfe.getTrainingTitle().trim()) &&
                                 Objects.equals(tf.getTrainingType().trim(), tfe.getTrainingType().trim()) &&
@@ -146,6 +175,10 @@ public class TrainingServiceImpl implements TrainingService {
         });
 
         return trainingDataFormatters;
+    }
+
+    private boolean isValidTraining(TrainingFromExcel tfe) {
+        return tfe.getDdb() != null && tfe.getDdf() != null && tfe.getDph() != null;
     }
 
     @Override
