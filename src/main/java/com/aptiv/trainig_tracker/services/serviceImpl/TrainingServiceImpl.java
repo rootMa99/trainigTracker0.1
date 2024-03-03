@@ -37,21 +37,19 @@ public class TrainingServiceImpl implements TrainingService {
                         UploadEmployeeData.getTrainingDataFromExcel(file.getInputStream());
                 List<TrainingDataFormatter> trainingDataFormatters = formatData(trainingFromExcels);
 
-                List<Training> trainings = trainingDataFormatters.stream()
+                trainingDataFormatters.stream()
                         .filter(tfe -> tfe.getTrainingTitle() != null && tfe.getTrainingType() != null && tfe.getModalite() != null)
                         .map(tfe -> {
                             List<Training> existingTrainings =
                                     trainingRepo.findAllByTrainingTypeTtNameAndTrainingTitleTrainingTitleNameAndDateDebutBetween(
-                                    tfe.getTrainingType(), tfe.getTrainingTitle(), tfe.getDdb(), tfe.getDdf());
+                                            tfe.getTrainingType(), tfe.getTrainingTitle(), tfe.getDdb(), tfe.getDdf());
                             if (existingTrainings.isEmpty()) {
                                 return createNewTraining(tfe);
                             } else {
                                 return mergeExistingTrainings(existingTrainings, tfe);
                             }
                         })
-                        .collect(Collectors.toList());
-
-                trainingRepo.saveAll(trainings);
+                        .forEach(trainingRepo::save); // Save each training individually
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
