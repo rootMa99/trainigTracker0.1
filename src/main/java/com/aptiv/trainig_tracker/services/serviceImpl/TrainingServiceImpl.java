@@ -29,6 +29,19 @@ public class TrainingServiceImpl implements TrainingService {
     TrainingTypeRepo trainingTypeRepo;
     TrainingTitleRepo trainingTitleRepo;
     TrainingRepo trainingRepo;
+
+    @Override
+    public void faMatrixBackup(MultipartFile file) throws IOException {
+        if (UploadEmployeeData.isValidFormat(file)) {
+            List<FaMatrixGlobal> faMatrixGlobals =UploadEmployeeData.getBackupExcel(file.getInputStream());
+            for (FaMatrixGlobal faMatrixGlobal: faMatrixGlobals){
+                System.out.println("matricule: "+faMatrixGlobal.getMatricule());
+                for (String training: faMatrixGlobal.getTrainings()){
+                    System.out.println(training+" -- ");
+                }
+            }
+        }
+    }
     @Override
     public void saveTrainingDataToDb(MultipartFile file) {
         if (UploadEmployeeData.isValidFormat(file)) {

@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +20,10 @@ public class Admin {
     EmployeeService employeeService;
     TrainingService trainingService;
 
+    @PostMapping(path = "/famatrix")
+    public void faMatrix(MultipartFile file) throws IOException {
+        trainingService.faMatrixBackup(file);
+    }
     @PostMapping(path = "/uploadData")
     public void saveDataToDataBase(MultipartFile file) throws IllegalAccessException {
         employeeService.saveEmployeeDataToDb(file);

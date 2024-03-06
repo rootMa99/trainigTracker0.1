@@ -6,10 +6,13 @@ import com.aptiv.trainig_tracker.models.TrainingFromExcel;
 import com.aptiv.trainig_tracker.models.TrainingRest;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
 public interface TrainingService {
+    void faMatrixBackup(MultipartFile file) throws IOException;
+
     void saveTrainingDataToDb(MultipartFile file) throws IllegalAccessException;
 
     void addTrainingToEmployees(TrainingDataFormatter trainingDataFormatter);
