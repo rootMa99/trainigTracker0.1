@@ -2,6 +2,7 @@ package com.aptiv.trainig_tracker.services;
 
 
 import com.aptiv.trainig_tracker.models.DataExcelEmployee;
+import com.aptiv.trainig_tracker.models.FaMatrixGlobal;
 import com.aptiv.trainig_tracker.models.TrainingFromExcel;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -131,6 +132,125 @@ public class UploadEmployeeData {
             throw new RuntimeException(e);
         }
         return dataExcelEmployees;
+    }
+
+    public static List<FaMatrixGlobal> getBackupExcel(InputStream inputStream) {
+        List<FaMatrixGlobal> faMatrixGlobals = new ArrayList<>();
+        boolean done = false;
+        try {
+            XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
+            XSSFSheet sheet= workbook.getSheet("Dh flexibilité");
+            int rowIndex=0;
+            for (Row row:sheet){
+                if (rowIndex == 0) {
+                    rowIndex++;
+                    continue;
+                }
+                if (done) {
+                    break;
+                }
+                Iterator<Cell> cellIterator = row.iterator();
+                int cellIndex = 0;
+                FaMatrixGlobal faMatrixGlobal=new FaMatrixGlobal();
+                List<String> trainings=new ArrayList<>();
+                while (cellIterator.hasNext() && !done) {
+                    Cell cell = cellIterator.next();
+                    switch (cellIndex) {
+                        case 0 -> {
+                            if (cell.getCellType() == BLANK) {
+                                done = true;
+                            }
+                            if (cell.getCellType() == CellType.NUMERIC) {
+                                faMatrixGlobal.setMatricule((long) cell.getNumericCellValue());
+
+                            } else {
+                                faMatrixGlobal.setMatricule(0L);
+                            }
+
+                        }
+                        case 1->{
+                            if (cell.getCellType() != BLANK) {
+                                trainings.add("Qualification FA Test fusible");
+                            }
+                        }
+                        case 2->{
+                            if (cell.getCellType() != BLANK) {
+                                trainings.add("Qualification FA CM");
+                            }
+                        }
+                        case 3->{
+                            if (cell.getCellType()!=BLANK){
+                                trainings.add("Qualification FA CE");
+                            }
+                        }
+                        case 4->{
+                            if (cell.getCellType()!=BLANK){
+                                trainings.add("Qualification FA CG");
+                            }
+                        }
+                        case 6->{
+                            if (cell.getCellType()!=BLANK){
+                                trainings.add("Qualification FA Réparation (Retouche du cablage)");
+                            }
+                        }
+                        case 7->{
+                            if (cell.getCellType()!=BLANK){
+                                trainings.add("Qualification FA Sealing");
+                            }
+                        }
+                        case 8->{
+                            if (cell.getCellType()!=BLANK){
+                                trainings.add("Qualification FA Emballage");
+                            }
+                        }
+                        case 9->{
+                            if (cell.getCellType()!=BLANK){
+                                trainings.add("Qualification FA USW");
+                            }
+                        }
+                        case 10->{
+                            if (cell.getCellType()!=BLANK){
+                                trainings.add("Qualification FA Vissage");
+                            }
+                        }
+                        case 11->{
+                            if (cell.getCellType()!=BLANK){
+                                trainings.add("Qualification FA Contention");
+                            }
+                        }
+                        case 12->{
+                            if (cell.getCellType()!=BLANK){
+                                trainings.add("Qualification FA Réparation des inverses (ROB)");
+                            }
+                        }
+                        case 13->{
+                            if (cell.getCellType()!=BLANK){
+                                trainings.add("Qualification FA Térostat");
+                            }
+                        }
+                        case 14->{
+                            if (cell.getCellType()!=BLANK){
+                                trainings.add("PCM");
+                            }
+                        }
+                        case 15->{
+                            if (cell.getCellType()!=BLANK){
+                                trainings.add("Euro 6");
+                            }
+                        }
+                        default -> {
+
+                        }
+                    }
+                    cellIndex++;
+                }
+                faMatrixGlobal.setTrainings(trainings);
+                faMatrixGlobals.add(faMatrixGlobal);
+            }
+        } catch (IOException e){
+            throw new RuntimeException(e);
+        }
+        return faMatrixGlobals;
     }
 
     public static List<TrainingFromExcel> getTrainingDataFromExcel(InputStream is) {
