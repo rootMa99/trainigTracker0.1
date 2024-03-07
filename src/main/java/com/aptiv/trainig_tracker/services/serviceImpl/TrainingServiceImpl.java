@@ -58,7 +58,9 @@ public class TrainingServiceImpl implements TrainingService {
 
                 for (Long matricule : faMatrixGlobalTraining.getMatricules()) {
                     Employee employee = employeeRepo.findByMatricule(matricule);
-                    assignTrainingToEmployee(employee, training, faMatrixGlobalTraining.getTraining());
+                    if(employee!=null){
+                        assignTrainingToEmployee(employee, training, faMatrixGlobalTraining.getTraining());
+                    }
                 }
             }
 
@@ -78,8 +80,8 @@ public class TrainingServiceImpl implements TrainingService {
         training.setTrainingTitle(trainingTitle);
         training.setModalite("Présentielle");
         training.setDureeParHeure(8);
-        training.setDateDebut(new Date(2022, Calendar.JANUARY, 1));
-        training.setDateFin(new Date(2022, Calendar.JANUARY, 1));
+        training.setDateDebut(new Date(122, Calendar.JANUARY, 1));
+        training.setDateFin(new Date(122, Calendar.JANUARY, 1));
         training.setEva(false);
         training.setFormatteur("KHATRI Abdessalam");
         training.setPrestataire("APTIV");
