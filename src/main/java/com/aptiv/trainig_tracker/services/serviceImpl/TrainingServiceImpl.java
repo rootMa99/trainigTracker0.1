@@ -33,15 +33,35 @@ public class TrainingServiceImpl implements TrainingService {
     @Override
     public void faMatrixBackup(MultipartFile file) throws IOException {
         if (UploadEmployeeData.isValidFormat(file)) {
-            List<FaMatrixGlobal> faMatrixGlobals =UploadEmployeeData.getBackupExcel(file.getInputStream());
-            for (FaMatrixGlobal faMatrixGlobal: faMatrixGlobals){
-                System.out.println("matricule: "+faMatrixGlobal.getMatricule());
-                for (String training: faMatrixGlobal.getTrainings()){
-                    System.out.println(training+" -- ");
+            List<FaMatrixGlobal> faMatrixGlobals = UploadEmployeeData.getBackupExcel(file.getInputStream());
+
+            Map<String, List<Long>> trainingToMatricules = new HashMap<>();
+
+            for (FaMatrixGlobal faMatrixGlobal : faMatrixGlobals) {
+                Long matricule = faMatrixGlobal.getMatricule();
+                List<String> trainings = faMatrixGlobal.getTrainings();
+
+                for (String training : trainings) {
+                    trainingToMatricules.computeIfAbsent(training, k -> new ArrayList<>()).add(matricule);
                 }
+            }
+
+            List<FaMatrixGlobalTraining> faMatrixGlobalTrainings = new ArrayList<>();
+            for (Map.Entry<String, List<Long>> entry : trainingToMatricules.entrySet()) {
+                faMatrixGlobalTrainings.add(new FaMatrixGlobalTraining(entry.getKey(), entry.getValue()));
+            }
+
+            // Print the transformed data
+            for (FaMatrixGlobalTraining faMatrixGlobalTraining : faMatrixGlobalTrainings) {
+                System.out.println("Training: " + faMatrixGlobalTraining.getTraining());
+                System.out.println("Matricules: " + faMatrixGlobalTraining.getMatricules());
+                System.out.println(faMatrixGlobalTraining.getMatricules().size());
+                System.out.println();
             }
         }
     }
+
+
     @Override
     public void saveTrainingDataToDb(MultipartFile file) {
         if (UploadEmployeeData.isValidFormat(file)) {
@@ -68,6 +88,7 @@ public class TrainingServiceImpl implements TrainingService {
             }
         }
     }
+
     private Training mergeExistingTrainings(List<Training> existingTrainings, TrainingDataFormatter tfe) {
         Training mergedTraining = new Training();
         mergedTraining.setTrainingId(utils.getGeneratedId(22));
@@ -102,6 +123,7 @@ public class TrainingServiceImpl implements TrainingService {
 
         return mergedTraining;
     }
+
     private Training createNewTraining(TrainingDataFormatter tfe) {
         Training training = new Training();
         training.setTrainingId(utils.getGeneratedId(22));
