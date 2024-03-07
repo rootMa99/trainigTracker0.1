@@ -50,17 +50,51 @@ public class TrainingServiceImpl implements TrainingService {
             for (Map.Entry<String, List<Long>> entry : trainingToMatricules.entrySet()) {
                 faMatrixGlobalTrainings.add(new FaMatrixGlobalTraining(entry.getKey(), entry.getValue()));
             }
-
-            // Print the transformed data
             for (FaMatrixGlobalTraining faMatrixGlobalTraining : faMatrixGlobalTrainings) {
-                System.out.println("Training: " + faMatrixGlobalTraining.getTraining());
-                System.out.println("Matricules: " + faMatrixGlobalTraining.getMatricules());
-                System.out.println(faMatrixGlobalTraining.getMatricules().size());
-                System.out.println();
+                printFaMatrixGlobalTrainingDetails(faMatrixGlobalTraining);
+
+                Training training = createTrainingFromFaMatrixGlobalTraining(faMatrixGlobalTraining);
+                training = trainingRepo.save(training);
+
+                for (Long matricule : faMatrixGlobalTraining.getMatricules()) {
+                    Employee employee = employeeRepo.findByMatricule(matricule);
+                    assignTrainingToEmployee(employee, training, faMatrixGlobalTraining.getTraining());
+                }
             }
+
         }
     }
-
+    private void printFaMatrixGlobalTrainingDetails(FaMatrixGlobalTraining faMatrixGlobalTraining) {
+        System.out.println("Training: " + faMatrixGlobalTraining.getTraining());
+        System.out.println("Matricules: " + faMatrixGlobalTraining.getMatricules());
+        System.out.println(faMatrixGlobalTraining.getMatricules().size());
+        System.out.println();
+    }
+    private Training createTrainingFromFaMatrixGlobalTraining(FaMatrixGlobalTraining faMatrixGlobalTraining) {
+        Training training = new Training();
+        training.setTrainingId(utils.getGeneratedId(22));
+        training.setTrainingType(trainingTypeRepo.findByTtName("Process"));
+        TrainingTitle trainingTitle = trainingTitleRepo.findByTrainingTitleName(faMatrixGlobalTraining.getTraining());
+        training.setTrainingTitle(trainingTitle);
+        training.setModalite("Présentielle");
+        training.setDureeParHeure(8);
+        training.setDateDebut(new Date(2022, Calendar.JANUARY, 1));
+        training.setDateFin(new Date(2022, Calendar.JANUARY, 1));
+        training.setEva(false);
+        training.setFormatteur("KHATRI Abdessalam");
+        training.setPrestataire("APTIV");
+        return training;
+    }
+    private void assignTrainingToEmployee(Employee employee, Training training, String trainingName) {
+        boolean found = employee.getTrainings().stream()
+                .anyMatch(tf -> Objects.equals(tf.getTrainingTitle().getTrainingTitleName(), trainingName));
+        if (!found) {
+            List<Training> trainings = employee.getTrainings();
+            trainings.add(training);
+            employee.setTrainings(trainings);
+            employeeRepo.save(employee);
+        }
+    }
 
     @Override
     public void saveTrainingDataToDb(MultipartFile file) {
