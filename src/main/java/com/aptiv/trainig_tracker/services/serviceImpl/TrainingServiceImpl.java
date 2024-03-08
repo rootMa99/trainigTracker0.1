@@ -118,7 +118,7 @@ public class TrainingServiceImpl implements TrainingService {
                                 return mergeExistingTrainings(existingTrainings, tfe);
                             }
                         })
-                        .forEach(trainingRepo::save); // Save each training individually
+                        .forEach(trainingRepo::save);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
