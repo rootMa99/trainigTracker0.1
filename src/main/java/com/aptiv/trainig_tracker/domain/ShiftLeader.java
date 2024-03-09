@@ -23,4 +23,7 @@ public class ShiftLeader {
     @OneToMany(mappedBy = "shiftLeader", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Employee> employees;
+    @OneToMany(mappedBy = "shiftLeader", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<OrderQualification> orderQualifications;
 }

@@ -28,9 +28,10 @@ public class OrderQualification {
     )
     private List<Employee> employees;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "Order_Training_Mapping",joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "training_title_id")
-    )
-    private List<TrainingTitle> trainingTitles;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "trainingTitle")
+    private TrainingTitle trainingTitle;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shiftLeader")
+    private ShiftLeader shiftLeader;
 }

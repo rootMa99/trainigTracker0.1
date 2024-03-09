@@ -26,9 +26,8 @@ public class TrainingTitle{
     @OneToMany(mappedBy = "trainingTitle", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Training> trainings;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "Order_Training_Mapping", joinColumns = @JoinColumn(name = "training_title_id"),
-            inverseJoinColumns = @JoinColumn(name = "order_id"))
+    @OneToMany(mappedBy = "trainingTitle", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<OrderQualification> orderQualifications;
 
 }
