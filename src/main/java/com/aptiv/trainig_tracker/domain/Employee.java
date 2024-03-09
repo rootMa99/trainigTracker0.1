@@ -50,4 +50,8 @@ public class Employee {
     @JoinTable(name = "Training_Employee_Mapping", joinColumns = @JoinColumn(name = "matricule"),
     inverseJoinColumns = @JoinColumn(name = "training_id"))
     private List<Training> trainings;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(name = "Order_Employee_Mapping", joinColumns = @JoinColumn(name = "matricule"),
+            inverseJoinColumns = @JoinColumn(name = "order_id"))
+    private List<OrderQualification> orderQualifications;
 }
