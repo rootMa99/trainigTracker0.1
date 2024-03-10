@@ -1,6 +1,7 @@
 package com.aptiv.trainig_tracker.controllers;
 
 import com.aptiv.trainig_tracker.models.OrderDto;
+import com.aptiv.trainig_tracker.models.OrderRest;
 import com.aptiv.trainig_tracker.models.StatusRest;
 import com.aptiv.trainig_tracker.services.OtherService;
 import lombok.AllArgsConstructor;
@@ -18,5 +19,10 @@ public class OtherController {
     @PostMapping(path = "/addOrder")
     public StatusRest addTrainingToEmployees(@RequestBody List<OrderDto> orderDtoList) {
         return otherService.saveOrderToDb(orderDtoList);
+    }
+
+    @GetMapping(path = "/order")
+    public OrderRest getOrderByID(@RequestParam String orderId){
+        return otherService.getOderById(orderId);
     }
 }

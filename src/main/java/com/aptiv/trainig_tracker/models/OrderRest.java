@@ -17,5 +17,6 @@ public class OrderRest {
     private String shiftLeader;
     private Date qualificationDate;
     private Date submitDate;
+    private String shift;
     private List<EmployeeRest> employeeRests;
 }

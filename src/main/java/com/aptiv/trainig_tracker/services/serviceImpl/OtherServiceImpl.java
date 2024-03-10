@@ -97,6 +97,7 @@ public class OtherServiceImpl implements OtherService {
         orderRest.setShiftLeader(order.getShiftLeader().getName());
         orderRest.setQualificationDate(order.getOrderDate());
         orderRest.setSubmitDate(order.getOrderDateSubmit());
+        orderRest.setShift(order.getShift());
         List<EmployeeRest> ers = new ArrayList<>();
         for (Employee e : order.getEmployees()) {
             ers.add(getEmployeeRest(e));
