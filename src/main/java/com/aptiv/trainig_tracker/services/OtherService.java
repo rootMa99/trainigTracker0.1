@@ -10,4 +10,6 @@ public interface OtherService {
     StatusRest saveOrderToDb(List<OrderDto> orderDtoList);
 
     OrderRest getOderById(String orderId);
+
+    List<OrderRest> getAllOrderBySl(String slName);
 }

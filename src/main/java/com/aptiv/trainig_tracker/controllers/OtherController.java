@@ -30,4 +30,8 @@ public class OtherController {
     public List<Long> getMatriculesBySLName(@RequestParam String shiftLeader){
         return  employeeService.getMatriculesBySl(shiftLeader);
     }
+    @GetMapping(path = "/orders")
+    public List<OrderRest> getAllOrderBySl(@RequestParam String shiftLeader){
+        return otherService.getAllOrderBySl(shiftLeader);
+    }
 }

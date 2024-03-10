@@ -2,6 +2,7 @@ package com.aptiv.trainig_tracker.services.serviceImpl;
 
 import com.aptiv.trainig_tracker.domain.Employee;
 import com.aptiv.trainig_tracker.domain.OrderQualification;
+import com.aptiv.trainig_tracker.domain.ShiftLeader;
 import com.aptiv.trainig_tracker.models.*;
 import com.aptiv.trainig_tracker.repositories.*;
 import com.aptiv.trainig_tracker.services.OtherService;
@@ -90,8 +91,12 @@ public class OtherServiceImpl implements OtherService {
 
     @Override
     public OrderRest getOderById(String orderId) {
-        OrderRest orderRest = new OrderRest();
         OrderQualification order = orderRepo.findByOrderId(orderId);
+        return getOrderRest(order);
+    }
+
+    private static OrderRest getOrderRest(OrderQualification order) {
+        OrderRest orderRest = new OrderRest();
         orderRest.setQualificationId(order.getOrderId());
         orderRest.setQualification(order.getTrainingTitle().getTrainingTitleName());
         orderRest.setShiftLeader(order.getShiftLeader().getName());
@@ -106,4 +111,15 @@ public class OtherServiceImpl implements OtherService {
         return orderRest;
     }
 
+    @Override
+    public List<OrderRest> getAllOrderBySl(String slName){
+        ShiftLeader shiftLeader = shiftLeaderRepo.findByName(slName);
+        List<OrderRest> orderRests=new ArrayList<>();
+        if (!shiftLeader.getOrderQualifications().isEmpty()){
+            for (OrderQualification o: shiftLeader.getOrderQualifications()){
+                orderRests.add(getOrderRest(o));
+            }
+        }
+        return orderRests;
+    }
 }
