@@ -13,6 +13,7 @@ import java.util.List;
 @Setter
 @Getter
 public class OrderDto {
+    private String orderId;
     private String qualification;
     private Date orderdate;
     private String shiftLeaderName;

@@ -18,6 +18,7 @@ public class OrderQualification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String orderId;
     private String shift;
     @Temporal(TemporalType.DATE)
     @Column(name = "order_date")
