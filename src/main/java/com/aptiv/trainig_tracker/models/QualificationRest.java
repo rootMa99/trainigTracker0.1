@@ -11,8 +11,8 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 @Getter
-public class StatusRest {
-    private String status;
-    private List<QualificationRest>qualificationRests;
-    private List<Long> notFound;
+public class QualificationRest {
+    private String qualificationId;
+    private String qualification;
+    private List<EmployeeRest> employeeRests;
 }

@@ -17,6 +17,6 @@ public class OtherController {
 
     @PostMapping(path = "/addOrder")
     public StatusRest addTrainingToEmployees(@RequestBody List<OrderDto> orderDtoList) {
-        return null;
+        return otherService.saveOrderToDb(orderDtoList);
     }
 }
