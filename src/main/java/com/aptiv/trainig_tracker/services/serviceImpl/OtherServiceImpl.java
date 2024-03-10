@@ -30,29 +30,31 @@ public class OtherServiceImpl implements OtherService {
     ShiftLeaderRepo shiftLeaderRepo;
     TrainingTitleRepo trainingTitleRepo;
 
-    public StatusRest saveOrderToDb(List<OrderDto> orderDtoList){
-        List<OrderQualification> orderQualifications=new ArrayList<>();
-        StatusRest statusRest=new StatusRest();
-        List<Long>notFound=new ArrayList<>();
-        for (OrderDto o: orderDtoList){
-            OrderQualification orderQualification=new OrderQualification();
+    @Override
+    public StatusRest saveOrderToDb(List<OrderDto> orderDtoList) {
+        List<OrderQualification> orderQualifications = new ArrayList<>();
+        StatusRest statusRest = new StatusRest();
+        List<Long> notFound = new ArrayList<>();
+        for (OrderDto o : orderDtoList) {
+            OrderQualification orderQualification = new OrderQualification();
             orderQualification.setOrderId(utils.getGeneratedId(22));
             orderQualification.setShift(o.getShift());
             orderQualification.setShiftLeader(shiftLeaderRepo.findByName(o.getShiftLeaderName()));
             orderQualification.setTrainingTitle(trainingTitleRepo.findByTrainingTitleName(o.getQualification()));
             orderQualification.setOrderDate(o.getOrderdate());
-            List<Employee> employees=new ArrayList<>();
-            for (Long l: o.getMatricules()){
-                Employee e= employeeRepo.findByMatricule(l);
-                if ( e==null){
+            List<Employee> employees = new ArrayList<>();
+            for (Long l : o.getMatricules()) {
+                Employee e = employeeRepo.findByMatricule(l);
+                if (e == null) {
                     notFound.add(l);
-                }else {
+                } else {
                     employees.add(e);
                 }
             }
             orderQualification.setEmployees(employees);
-
+            orderQualifications.add(orderQualification);
         }
-        return null;
+        statusRest.setNotFound(notFound);
+        return statusRest;
     }
 }
