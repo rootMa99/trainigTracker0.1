@@ -157,6 +157,7 @@ public class OtherServiceImpl implements OtherService {
             if (o.getOrderdate() != null) {
                 orderQualification.setOrderDate(o.getOrderdate());
             }
+
             for (Long l : o.getMatricules()) {
                 Employee e = employeeRepo.findByMatricule(l);
                 if (e == null) {
