@@ -2,10 +2,7 @@ package com.aptiv.trainig_tracker.services.serviceImpl;
 
 import com.aptiv.trainig_tracker.domain.Employee;
 import com.aptiv.trainig_tracker.domain.OrderQualification;
-import com.aptiv.trainig_tracker.models.EmployeeRest;
-import com.aptiv.trainig_tracker.models.OrderDto;
-import com.aptiv.trainig_tracker.models.QualificationRest;
-import com.aptiv.trainig_tracker.models.StatusRest;
+import com.aptiv.trainig_tracker.models.*;
 import com.aptiv.trainig_tracker.repositories.*;
 import com.aptiv.trainig_tracker.services.OtherService;
 import com.aptiv.trainig_tracker.ui.Utils;
@@ -88,5 +85,12 @@ public class OtherServiceImpl implements OtherService {
         employeeRest.setShiftLeader(e.getShiftLeader().getName());
         employeeRest.setTeamLeader(e.getTeamLeader().getName());
         return employeeRest;
+    }
+
+    private OrderRest getOderById(String orderId){
+        OrderRest orderRest=new OrderRest();
+        OrderQualification order=orderRepo.findByOrderId(orderId);
+        orderRest
+        return null;
     }
 }
