@@ -15,4 +15,6 @@ public interface OtherService {
     List<OrderRest> getAllOrderBySl(String slName);
 
     List<OrderRest> getOrdersByDateBetween(Date startDate, Date endDate);
+
+    StatusRest updateOrder(String orderId, OrderDto o);
 }

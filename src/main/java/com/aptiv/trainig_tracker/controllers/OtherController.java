@@ -43,7 +43,7 @@ public class OtherController {
     }
 
     @PutMapping(path = "/EditOrder")
-    public StatusRest EditOrder(@RequestParam String OrderId, @RequestBody OrderDto orderDto){
-        return null;
+    public StatusRest EditOrder(@RequestParam String orderId, @RequestBody OrderDto orderDto){
+        return otherService.updateOrder(orderId, orderDto);
     }
 }

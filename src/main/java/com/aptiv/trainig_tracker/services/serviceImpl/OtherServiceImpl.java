@@ -135,6 +135,7 @@ public class OtherServiceImpl implements OtherService {
         return orderRests;
     }
 
+    @Override
     public StatusRest updateOrder(String orderId, OrderDto o) {
         OrderQualification orderQualification = orderRepo.findByOrderId(orderId);
         StatusRest statusRest = new StatusRest();
@@ -144,13 +145,13 @@ public class OtherServiceImpl implements OtherService {
             List<QualificationRest> qualificationRests = new ArrayList<>();
             List<Employee> employees = new ArrayList<>();
             List<EmployeeRest> employeeRests = new ArrayList<>();
-            if (!o.getShift().isEmpty()) {
+            if (o.getShift()!=null) {
                 orderQualification.setShift(o.getShift());
             }
-            if (!o.getShiftLeaderName().isEmpty()) {
+            if (o.getShiftLeaderName()!=null) {
                 orderQualification.setShiftLeader(shiftLeaderRepo.findByName(o.getShiftLeaderName()));
             }
-            if (!o.getQualification().isEmpty()) {
+            if (o.getQualification()!=null) {
                 orderQualification.setTrainingTitle(trainingTitleRepo.findByTrainingTitleName(o.getQualification()));
             }
             if (o.getOrderdate() != null) {
