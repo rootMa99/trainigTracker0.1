@@ -282,4 +282,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         trainingFromExcel.setEva(t.isEva());
         return trainingFromExcel;
     }
+
+    @Override
+    public List<Long> getMatriculesBySl(String shiftLeaderName){
+        ShiftLeader shiftLeader = shiftLeaderRepo.findByName(shiftLeaderName);
+        List<Long> matricules=new ArrayList<>();
+        System.out.println(shiftLeader.getEmployees().size());
+        for (Employee e: shiftLeader.getEmployees()){
+            matricules.add(e.getMatricule());
+        }
+        return matricules;
+    }
+
 }
