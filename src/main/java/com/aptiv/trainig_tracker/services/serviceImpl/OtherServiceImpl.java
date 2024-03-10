@@ -122,4 +122,15 @@ public class OtherServiceImpl implements OtherService {
         }
         return orderRests;
     }
+    @Override
+    public List<OrderRest> getOrdersByDateBetween(Date startDate, Date endDate){
+        List<OrderQualification> orderQualifications= orderRepo.findAllByOrderDateBetween(startDate, endDate);
+        List<OrderRest> orderRests=new ArrayList<>();
+        if (!orderQualifications.isEmpty()){
+            for (OrderQualification o: orderQualifications){
+                orderRests.add(getOrderRest(o));
+            }
+        }
+        return orderRests;
+    }
 }

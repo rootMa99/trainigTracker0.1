@@ -4,6 +4,7 @@ import com.aptiv.trainig_tracker.models.OrderDto;
 import com.aptiv.trainig_tracker.models.OrderRest;
 import com.aptiv.trainig_tracker.models.StatusRest;
 
+import java.util.Date;
 import java.util.List;
 
 public interface OtherService {
@@ -12,4 +13,6 @@ public interface OtherService {
     OrderRest getOderById(String orderId);
 
     List<OrderRest> getAllOrderBySl(String slName);
+
+    List<OrderRest> getOrdersByDateBetween(Date startDate, Date endDate);
 }

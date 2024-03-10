@@ -6,8 +6,10 @@ import com.aptiv.trainig_tracker.models.StatusRest;
 import com.aptiv.trainig_tracker.services.EmployeeService;
 import com.aptiv.trainig_tracker.services.OtherService;
 import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @CrossOrigin(origins = "*")
@@ -33,5 +35,10 @@ public class OtherController {
     @GetMapping(path = "/orders")
     public List<OrderRest> getAllOrderBySl(@RequestParam String shiftLeader){
         return otherService.getAllOrderBySl(shiftLeader);
+    }
+    @GetMapping(path = "/orders/dateBetween")
+    public  List<OrderRest> getOrdersByDateBetween(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
+                                                   @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate){
+        return otherService.getOrdersByDateBetween(startDate, endDate);
     }
 }
