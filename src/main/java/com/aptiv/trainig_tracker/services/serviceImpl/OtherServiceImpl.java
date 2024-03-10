@@ -30,15 +30,16 @@ public class OtherServiceImpl implements OtherService {
     ShiftLeaderRepo shiftLeaderRepo;
     TrainingTitleRepo trainingTitleRepo;
     OrderRepo orderRepo;
+
     @Override
     public StatusRest saveOrderToDb(List<OrderDto> orderDtoList) {
         List<OrderQualification> orderQualifications = new ArrayList<>();
         StatusRest statusRest = new StatusRest();
         List<Long> notFound = new ArrayList<>();
-        List<QualificationRest>qualificationRests=new ArrayList<>();
+        List<QualificationRest> qualificationRests = new ArrayList<>();
         for (OrderDto o : orderDtoList) {
-            QualificationRest qr=new QualificationRest();
-            List<EmployeeRest> employeeRests=new ArrayList<>();
+            QualificationRest qr = new QualificationRest();
+            List<EmployeeRest> employeeRests = new ArrayList<>();
             OrderQualification orderQualification = new OrderQualification();
             orderQualification.setOrderId(utils.getGeneratedId(22));
             orderQualification.setShift(o.getShift());
@@ -71,7 +72,7 @@ public class OtherServiceImpl implements OtherService {
     }
 
     private static EmployeeRest getEmployeeRest(Employee e) {
-        EmployeeRest employeeRest=new EmployeeRest();
+        EmployeeRest employeeRest = new EmployeeRest();
         employeeRest.setMatricule(e.getMatricule());
         employeeRest.setNom(e.getNom());
         employeeRest.setPrenom(e.getPrenom());
@@ -87,10 +88,20 @@ public class OtherServiceImpl implements OtherService {
         return employeeRest;
     }
 
-    private OrderRest getOderById(String orderId){
-        OrderRest orderRest=new OrderRest();
-        OrderQualification order=orderRepo.findByOrderId(orderId);
-        orderRest
-        return null;
+    @Override
+    public OrderRest getOderById(String orderId) {
+        OrderRest orderRest = new OrderRest();
+        OrderQualification order = orderRepo.findByOrderId(orderId);
+        orderRest.setQualificationId(order.getOrderId());
+        orderRest.setQualification(order.getTrainingTitle().getTrainingTitleName());
+        orderRest.setShiftLeader(order.getShiftLeader().getName());
+        orderRest.setQualificationDate(order.getOrderDate());
+        orderRest.setSubmitDate(order.getOrderDateSubmit());
+        List<EmployeeRest> ers = new ArrayList<>();
+        for (Employee e : order.getEmployees()) {
+            ers.add(getEmployeeRest(e));
+        }
+        orderRest.setEmployeeRests(ers);
+        return orderRest;
     }
 }
