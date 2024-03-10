@@ -23,6 +23,9 @@ public class OrderQualification {
     @Temporal(TemporalType.DATE)
     @Column(name = "order_date")
     private Date orderDate;
+    @Temporal(TemporalType.DATE)
+    @Column(name = "order_date_submit")
+    private Date orderDateSubmit;
     @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(name = "Order_Employee_Mapping",joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "matricule")

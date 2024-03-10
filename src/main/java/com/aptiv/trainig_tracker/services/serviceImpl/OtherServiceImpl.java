@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -47,6 +48,7 @@ public class OtherServiceImpl implements OtherService {
             orderQualification.setShiftLeader(shiftLeaderRepo.findByName(o.getShiftLeaderName()));
             orderQualification.setTrainingTitle(trainingTitleRepo.findByTrainingTitleName(o.getQualification()));
             orderQualification.setOrderDate(o.getOrderdate());
+            orderQualification.setOrderDateSubmit(new Date());
             List<Employee> employees = new ArrayList<>();
             for (Long l : o.getMatricules()) {
                 Employee e = employeeRepo.findByMatricule(l);
@@ -62,6 +64,7 @@ public class OtherServiceImpl implements OtherService {
             qr.setQualificationId(orderQualification.getOrderId());
             qr.setEmployeeRests(employeeRests);
             qr.setQualification(o.getQualification());
+            qr.setQualificationDate(o.getOrderdate());
             qualificationRests.add(qr);
         }
         orderRepo.saveAll(orderQualifications);
