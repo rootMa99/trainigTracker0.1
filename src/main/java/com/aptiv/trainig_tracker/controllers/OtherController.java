@@ -41,4 +41,9 @@ public class OtherController {
                                                    @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate){
         return otherService.getOrdersByDateBetween(startDate, endDate);
     }
+
+    @PutMapping(path = "/EditOrder")
+    public StatusRest EditOrder(@RequestParam String OrderId, @RequestBody OrderDto orderDto){
+        return null;
+    }
 }

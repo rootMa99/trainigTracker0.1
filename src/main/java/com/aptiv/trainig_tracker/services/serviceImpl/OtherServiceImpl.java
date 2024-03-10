@@ -112,25 +112,71 @@ public class OtherServiceImpl implements OtherService {
     }
 
     @Override
-    public List<OrderRest> getAllOrderBySl(String slName){
+    public List<OrderRest> getAllOrderBySl(String slName) {
         ShiftLeader shiftLeader = shiftLeaderRepo.findByName(slName);
-        List<OrderRest> orderRests=new ArrayList<>();
-        if (!shiftLeader.getOrderQualifications().isEmpty()){
-            for (OrderQualification o: shiftLeader.getOrderQualifications()){
+        List<OrderRest> orderRests = new ArrayList<>();
+        if (!shiftLeader.getOrderQualifications().isEmpty()) {
+            for (OrderQualification o : shiftLeader.getOrderQualifications()) {
                 orderRests.add(getOrderRest(o));
             }
         }
         return orderRests;
     }
+
     @Override
-    public List<OrderRest> getOrdersByDateBetween(Date startDate, Date endDate){
-        List<OrderQualification> orderQualifications= orderRepo.findAllByOrderDateBetween(startDate, endDate);
-        List<OrderRest> orderRests=new ArrayList<>();
-        if (!orderQualifications.isEmpty()){
-            for (OrderQualification o: orderQualifications){
+    public List<OrderRest> getOrdersByDateBetween(Date startDate, Date endDate) {
+        List<OrderQualification> orderQualifications = orderRepo.findAllByOrderDateBetween(startDate, endDate);
+        List<OrderRest> orderRests = new ArrayList<>();
+        if (!orderQualifications.isEmpty()) {
+            for (OrderQualification o : orderQualifications) {
                 orderRests.add(getOrderRest(o));
             }
         }
         return orderRests;
+    }
+
+    public StatusRest updateOrder(String orderId, OrderDto o) {
+        OrderQualification orderQualification = orderRepo.findByOrderId(orderId);
+        StatusRest statusRest = new StatusRest();
+        if (orderQualification != null) {
+            QualificationRest qr = new QualificationRest();
+            List<Long> notFound = new ArrayList<>();
+            List<QualificationRest> qualificationRests = new ArrayList<>();
+            List<Employee> employees = new ArrayList<>();
+            List<EmployeeRest> employeeRests = new ArrayList<>();
+            if (!o.getShift().isEmpty()) {
+                orderQualification.setShift(o.getShift());
+            }
+            if (!o.getShiftLeaderName().isEmpty()) {
+                orderQualification.setShiftLeader(shiftLeaderRepo.findByName(o.getShiftLeaderName()));
+            }
+            if (!o.getQualification().isEmpty()) {
+                orderQualification.setTrainingTitle(trainingTitleRepo.findByTrainingTitleName(o.getQualification()));
+            }
+            if (o.getOrderdate() != null) {
+                orderQualification.setOrderDate(o.getOrderdate());
+            }
+            for (Long l : o.getMatricules()) {
+                Employee e = employeeRepo.findByMatricule(l);
+                if (e == null) {
+                    notFound.add(l);
+                } else {
+                    employees.add(e);
+                    employeeRests.add(getEmployeeRest(e));
+                }
+            }
+            orderQualification.setEmployees(employees);
+            statusRest.setNotFound(notFound);
+            qr.setQualificationId(orderQualification.getOrderId());
+            qr.setEmployeeRests(employeeRests);
+            qr.setQualification(o.getQualification());
+            qr.setQualificationDate(o.getOrderdate());
+            qualificationRests.add(qr);
+            statusRest.setQualificationRests(qualificationRests);
+            orderRepo.save(orderQualification);
+        } else {
+            statusRest.setStatus("not found");
+        }
+        return statusRest;
     }
 }
