@@ -17,4 +17,8 @@ public interface OtherService {
     List<OrderRest> getOrdersByDateBetween(Date startDate, Date endDate);
 
     StatusRest updateOrder(String orderId, OrderDto o);
+
+    void deleteOrder(String orderID);
+
+    void deleteMultiOrder(List<String> orderIds);
 }

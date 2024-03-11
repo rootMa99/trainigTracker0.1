@@ -3,7 +3,6 @@ package com.aptiv.trainig_tracker.services.serviceImpl;
 import com.aptiv.trainig_tracker.domain.Employee;
 import com.aptiv.trainig_tracker.domain.OrderQualification;
 import com.aptiv.trainig_tracker.domain.ShiftLeader;
-import com.aptiv.trainig_tracker.domain.Training;
 import com.aptiv.trainig_tracker.models.*;
 import com.aptiv.trainig_tracker.repositories.*;
 import com.aptiv.trainig_tracker.services.OtherService;
@@ -182,11 +181,17 @@ public class OtherServiceImpl implements OtherService {
         }
         return statusRest;
     }
+    @Override
     public void deleteOrder(String orderID){
         OrderQualification order = orderRepo.findByOrderId(orderID);
         if (order == null) throw new RuntimeException("training Does Not Exist," +
                 " You Try To Delete Formation With ID: " + orderID);
         orderRepo.delete(order);
     }
-
+    @Override
+    public void deleteMultiOrder(List<String> orderIds){
+        for (String orderID: orderIds){
+            deleteOrder(orderID);
+        }
+    }
 }
