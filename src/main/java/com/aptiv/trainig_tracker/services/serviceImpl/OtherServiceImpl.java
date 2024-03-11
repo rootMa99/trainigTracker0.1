@@ -184,9 +184,9 @@ public class OtherServiceImpl implements OtherService {
     @Override
     public void deleteOrder(String orderID){
         OrderQualification order = orderRepo.findByOrderId(orderID);
-        if (order == null) throw new RuntimeException("training Does Not Exist," +
-                " You Try To Delete Formation With ID: " + orderID);
-        orderRepo.delete(order);
+        if (order != null) {
+            orderRepo.delete(order);
+        };
     }
     @Override
     public void deleteMultiOrder(List<String> orderIds){

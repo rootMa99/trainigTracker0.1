@@ -19,31 +19,45 @@ import java.util.List;
 public class OtherController {
     OtherService otherService;
     EmployeeService employeeService;
+
     @PostMapping(path = "/addOrder")
     public StatusRest addTrainingToEmployees(@RequestBody List<OrderDto> orderDtoList) {
         return otherService.saveOrderToDb(orderDtoList);
     }
 
     @GetMapping(path = "/order")
-    public OrderRest getOrderByID(@RequestParam String orderId){
+    public OrderRest getOrderByID(@RequestParam String orderId) {
         return otherService.getOderById(orderId);
     }
+
     @GetMapping
-    public List<Long> getMatriculesBySLName(@RequestParam String shiftLeader){
-        return  employeeService.getMatriculesBySl(shiftLeader);
+    public List<Long> getMatriculesBySLName(@RequestParam String shiftLeader) {
+        return employeeService.getMatriculesBySl(shiftLeader);
     }
+
     @GetMapping(path = "/orders")
-    public List<OrderRest> getAllOrderBySl(@RequestParam String shiftLeader){
+    public List<OrderRest> getAllOrderBySl(@RequestParam String shiftLeader) {
         return otherService.getAllOrderBySl(shiftLeader);
     }
+
     @GetMapping(path = "/orders/dateBetween")
-    public  List<OrderRest> getOrdersByDateBetween(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
-                                                   @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate){
+    public List<OrderRest> getOrdersByDateBetween(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
+                                                  @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate) {
         return otherService.getOrdersByDateBetween(startDate, endDate);
     }
 
     @PutMapping(path = "/EditOrder")
-    public StatusRest EditOrder(@RequestParam String orderId, @RequestBody OrderDto orderDto){
+    public StatusRest EditOrder(@RequestParam String orderId, @RequestBody OrderDto orderDto) {
         return otherService.updateOrder(orderId, orderDto);
+    }
+
+    @DeleteMapping(path = "/deleteOrder")
+    public void deleteOrderById(@RequestParam String orderId) {
+        otherService.deleteOrder(orderId);
+    }
+
+    @DeleteMapping(path = "/deleteOrders")
+    public void deleteOrdersByIds(@RequestBody List<String> ordersIDs) {
+        otherService.deleteMultiOrder(ordersIDs);
     }
 }
