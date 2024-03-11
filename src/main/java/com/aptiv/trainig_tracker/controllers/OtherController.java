@@ -61,7 +61,7 @@ public class OtherController {
     public void deleteOrdersByIds(@RequestBody List<String> ordersIDs) {
         otherService.deleteMultiOrder(ordersIDs);
     }
-    @GetMapping(path = "trainingTypeAndTitle")
+    @GetMapping(path = "/trainingTypeAndTitle")
     public List<TrainingTypeAndTitlesDto> getTrainingsTypesAndTitles(){
         return otherService.getAllTrainingsTypeAndTitles();
     }
