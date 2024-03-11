@@ -3,6 +3,7 @@ package com.aptiv.trainig_tracker.controllers;
 import com.aptiv.trainig_tracker.models.OrderDto;
 import com.aptiv.trainig_tracker.models.OrderRest;
 import com.aptiv.trainig_tracker.models.StatusRest;
+import com.aptiv.trainig_tracker.models.TrainingTypeAndTitlesDto;
 import com.aptiv.trainig_tracker.services.EmployeeService;
 import com.aptiv.trainig_tracker.services.OtherService;
 import lombok.AllArgsConstructor;
@@ -59,5 +60,9 @@ public class OtherController {
     @DeleteMapping(path = "/deleteOrders")
     public void deleteOrdersByIds(@RequestBody List<String> ordersIDs) {
         otherService.deleteMultiOrder(ordersIDs);
+    }
+    @GetMapping(path = "trainingTypeAndTitle")
+    public List<TrainingTypeAndTitlesDto> getTrainingsTypesAndTitles(){
+        return otherService.getAllTrainingsTypeAndTitles();
     }
 }

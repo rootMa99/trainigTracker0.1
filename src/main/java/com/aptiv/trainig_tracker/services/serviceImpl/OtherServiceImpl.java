@@ -1,8 +1,6 @@
 package com.aptiv.trainig_tracker.services.serviceImpl;
 
-import com.aptiv.trainig_tracker.domain.Employee;
-import com.aptiv.trainig_tracker.domain.OrderQualification;
-import com.aptiv.trainig_tracker.domain.ShiftLeader;
+import com.aptiv.trainig_tracker.domain.*;
 import com.aptiv.trainig_tracker.models.*;
 import com.aptiv.trainig_tracker.repositories.*;
 import com.aptiv.trainig_tracker.services.OtherService;
@@ -24,14 +22,13 @@ public class OtherServiceImpl implements OtherService {
     //FamilyRepo familyRepo;
     //PosteRepo posteRepo;
     //TeamLeaderRepo teamLeaderRepo;
-    //TrainingTypeRepo trainingTypeRepo;
     //TrainingRepo trainingRepo;
     Utils utils;
     EmployeeRepo employeeRepo;
     ShiftLeaderRepo shiftLeaderRepo;
     TrainingTitleRepo trainingTitleRepo;
     OrderRepo orderRepo;
-
+    TrainingTypeRepo trainingTypeRepo;
     @Override
     public StatusRest saveOrderToDb(List<OrderDto> orderDtoList) {
         List<OrderQualification> orderQualifications = new ArrayList<>();
@@ -193,5 +190,21 @@ public class OtherServiceImpl implements OtherService {
         for (String orderID: orderIds){
             deleteOrder(orderID);
         }
+    }
+    @Override
+    public List<TrainingTypeAndTitlesDto> getAllTrainingsTypeAndTitles(){
+        List<TrainingType> trainingTypes= trainingTypeRepo.findAll();
+        List<TrainingTypeAndTitlesDto>tttds=new ArrayList<>();
+        for (TrainingType tp: trainingTypes){
+            TrainingTypeAndTitlesDto tttd=new TrainingTypeAndTitlesDto();
+            tttd.setTrainingType(tp.getTtName());
+            List<String> tts=new ArrayList<>();
+            for (TrainingTitle tl: tp.getTrainingTitles()){
+                tts.add(tl.getTrainingTitleName());
+            }
+            tttd.setTrainingTitles(tts);
+            tttds.add(tttd);
+        }
+        return  tttds;
     }
 }

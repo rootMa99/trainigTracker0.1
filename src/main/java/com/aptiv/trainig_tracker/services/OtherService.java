@@ -3,6 +3,7 @@ package com.aptiv.trainig_tracker.services;
 import com.aptiv.trainig_tracker.models.OrderDto;
 import com.aptiv.trainig_tracker.models.OrderRest;
 import com.aptiv.trainig_tracker.models.StatusRest;
+import com.aptiv.trainig_tracker.models.TrainingTypeAndTitlesDto;
 
 import java.util.Date;
 import java.util.List;
@@ -21,4 +22,6 @@ public interface OtherService {
     void deleteOrder(String orderID);
 
     void deleteMultiOrder(List<String> orderIds);
+
+    List<TrainingTypeAndTitlesDto> getAllTrainingsTypeAndTitles();
 }
