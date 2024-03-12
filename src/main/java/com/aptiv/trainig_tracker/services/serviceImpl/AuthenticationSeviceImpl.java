@@ -11,9 +11,13 @@ import com.aptiv.trainig_tracker.services.AuthenticationService;
 import com.aptiv.trainig_tracker.services.JWTService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -26,14 +30,27 @@ public class AuthenticationSeviceImpl implements AuthenticationService {
 
     @Override
     public User changePassword(ChangePwd changePwd) {
-        User user=userRepository.findByRole(Role.ROOT);
+        User user = userRepository.findByRole(Role.ROOT);
         user.setPassword(new BCryptPasswordEncoder().encode(changePwd.getPassword()));
         return userRepository.save(user);
     }
 
+    public User createUser(SignInRequest signInRequest) {
+        return null;
+    }
+
     @Override
     public JwtAuthenticationResponse signIn(SignInRequest signInRequest) {
-        return null;
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getUserName(),
+                signInRequest.getPassword()));
+        var user =
+                userRepository.findByUserName(signInRequest.getUserName()).orElseThrow(() -> new UsernameNotFoundException("invalid userName or password"));
+        var jwt = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+        JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
+        jwtAuthenticationResponse.setToken(jwt);
+        jwtAuthenticationResponse.setRefreshToken(refreshToken);
+        return jwtAuthenticationResponse;
     }
 
     @Override
