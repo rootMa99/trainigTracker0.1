@@ -22,22 +22,24 @@ public class JWTServiceImpl implements JWTService {
     }
 
     @Override
-    public String extractUserName(String token){
+    public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);
     }
+
     @Override
     public String generateToken(UserDetails userDetails) {
         return Jwts.builder().setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+ 1000*60*24))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
                 .signWith(getSigninkey(), SignatureAlgorithm.HS256).compact();
     }
 
     @Override
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String userName= extractUserName(token);
-        return (userName.equals(userDetails.getUsername())&&!isTokenExpired(token));
+        final String userName = extractUserName(token);
+        return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
+
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {
         final Claims claims = extractAllClaims(token);
         return claimsResolvers.apply(claims);
@@ -45,7 +47,7 @@ public class JWTServiceImpl implements JWTService {
 
     private Key getSigninkey() {
         byte[] key = Decoders.BASE64
-                .decode("hjkdnsdkqz455hjkdnsdkqzhjkdnsdkqz455hjkdnsdkqzhjkdnsdkqz455hjkdnsdkqzhjkdnsdkqz455hjkdnsdkqz");
+                .decode("ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnVZVzFsYzNCaFpHUWlPaUprWldaaGRXeDBJbjAuZXp6Z3pjMzZsVVRRcWZ1Yzd6VlVCZzJaNUVNcU5hOU9HSGpZWjlCTlZV");
         return Keys.hmacShaKeyFor(key);
     }
 
