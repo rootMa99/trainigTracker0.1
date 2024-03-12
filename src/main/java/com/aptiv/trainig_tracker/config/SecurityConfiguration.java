@@ -29,9 +29,11 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/auth").permitAll()
+                        .requestMatchers("/auth/**", "/other", "/other/trainingTypeAndTitle")
+                        .permitAll()
                         .requestMatchers("/admin/**")
-                        .hasAnyAuthority(Role.ADMIN.name(), Role.ROOT.name())
+                        .hasAnyAuthority(Role.ADMIN.name(), Role.ROOT.name()).requestMatchers("/other/addOrder",
+                                "/other/EditOrder", "/other/deleteOrder", "/deleteOrders").hasAnyAuthority(Role.SHIFT_LEADER.name()).requestMatchers("/other/order", "/other/orders", "/other/orders/dateBetween").hasAnyAuthority(Role.SHIFT_LEADER.name(), Role.TRAINER.name())
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->
