@@ -31,7 +31,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/auth/**", "/other", "/other/trainingTypeAndTitle")
                         .permitAll()
-                        .requestMatchers("/admin/**")
+                        .requestMatchers("/admin/**", "/employee/**")
                         .hasAnyAuthority(Role.ADMIN.name(), Role.ROOT.name()).requestMatchers("/other/addOrder",
                                 "/other/EditOrder", "/other/deleteOrder", "/deleteOrders").hasAnyAuthority(Role.SHIFT_LEADER.name()).requestMatchers("/other/order", "/other/orders", "/other/orders/dateBetween").hasAnyAuthority(Role.SHIFT_LEADER.name(), Role.TRAINER.name())
                         .anyRequest().authenticated()
