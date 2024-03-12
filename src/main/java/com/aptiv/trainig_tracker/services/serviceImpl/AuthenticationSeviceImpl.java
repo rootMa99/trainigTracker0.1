@@ -55,6 +55,15 @@ public class AuthenticationSeviceImpl implements AuthenticationService {
 
     @Override
     public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+        String userName= jwtService.extractUserName(refreshTokenRequest.getToken());
+        User user=userRepository.findByUserName(userName).orElseThrow();
+        if (jwtService.isTokenValid(refreshTokenRequest.getToken(), user)){
+            var jwt=jwtService.generateToken(user);
+            JwtAuthenticationResponse jwtAuthenticationResponse=new JwtAuthenticationResponse();
+            jwtAuthenticationResponse.setToken(jwt);
+            jwtAuthenticationResponse.setRefreshToken(refreshTokenRequest.getToken());
+            return jwtAuthenticationResponse;
+        }
         return null;
     }
 }
