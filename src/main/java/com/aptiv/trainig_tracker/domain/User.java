@@ -1,6 +1,9 @@
 package com.aptiv.trainig_tracker.domain;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,6 +15,8 @@ import java.util.List;
 @Data
 @Entity(name = "user")
 public class User implements UserDetails {
+    @jakarta.persistence.Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
     private String userName;
     private String password;
