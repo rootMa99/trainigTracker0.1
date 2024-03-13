@@ -13,6 +13,8 @@ public interface AuthenticationService {
 
     User createAdmin(SignInRequest signInRequest);
 
+    User createTrainer(SignInRequest signInRequest);
+
     JwtAuthenticationResponse signIn(SignInRequest signInRequest);
     JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest);
 }

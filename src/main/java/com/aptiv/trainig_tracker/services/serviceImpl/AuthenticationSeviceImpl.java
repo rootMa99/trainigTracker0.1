@@ -57,6 +57,10 @@ public class AuthenticationSeviceImpl implements AuthenticationService {
         return createUser(signInRequest, Role.ADMIN);
     }
 
+    @Override
+    public User createTrainer(SignInRequest signInRequest){
+        return createUser(signInRequest, Role.TRAINER);
+    }
 
     @Override
     public JwtAuthenticationResponse signIn(SignInRequest signInRequest) {
