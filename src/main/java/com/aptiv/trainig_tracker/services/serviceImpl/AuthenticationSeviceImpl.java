@@ -34,6 +34,7 @@ public class AuthenticationSeviceImpl implements AuthenticationService {
         user.setPassword(new BCryptPasswordEncoder().encode(changePwd.getPassword()));
         return userRepository.save(user);
     }
+
     @Override
     public User createSl(SignInRequest signInRequest) {
         return createUser(signInRequest, Role.SHIFT_LEADER);
@@ -42,7 +43,7 @@ public class AuthenticationSeviceImpl implements AuthenticationService {
     private User createUser(SignInRequest signInRequest, Role role) {
         User userRoot = new User();
         boolean userN = userRepository.findByUserName(signInRequest.getUserName()).isPresent();
-        if (!userN){
+        if (!userN) {
             userRoot.setUserName(signInRequest.getUserName());
             userRoot.setPassword(new BCryptPasswordEncoder().encode(signInRequest.getPassword()));
             userRoot.setRole(role);
@@ -53,12 +54,12 @@ public class AuthenticationSeviceImpl implements AuthenticationService {
     }
 
     @Override
-    public User createAdmin(SignInRequest signInRequest){
+    public User createAdmin(SignInRequest signInRequest) {
         return createUser(signInRequest, Role.ADMIN);
     }
 
     @Override
-    public User createTrainer(SignInRequest signInRequest){
+    public User createTrainer(SignInRequest signInRequest) {
         return createUser(signInRequest, Role.TRAINER);
     }
 
