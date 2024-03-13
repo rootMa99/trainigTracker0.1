@@ -36,16 +36,27 @@ public class AuthenticationSeviceImpl implements AuthenticationService {
     }
     @Override
     public User createSl(SignInRequest signInRequest) {
+        return createUser(signInRequest, Role.SHIFT_LEADER);
+    }
+
+    private User createUser(SignInRequest signInRequest, Role role) {
         User userRoot = new User();
         boolean userN = userRepository.findByUserName(signInRequest.getUserName()).isPresent();
         if (!userN){
             userRoot.setUserName(signInRequest.getUserName());
             userRoot.setPassword(new BCryptPasswordEncoder().encode(signInRequest.getPassword()));
-            userRoot.setRole(Role.SHIFT_LEADER);
+            userRoot.setRole(role);
             userRepository.save(userRoot);
             return userRoot;
-        }throw new RuntimeException("this account already founded");
+        }
+        throw new RuntimeException("An account with these credentials has previously been registered in the database");
     }
+
+    @Override
+    public User createAdmin(SignInRequest signInRequest){
+        return createUser(signInRequest, Role.ADMIN);
+    }
+
 
     @Override
     public JwtAuthenticationResponse signIn(SignInRequest signInRequest) {

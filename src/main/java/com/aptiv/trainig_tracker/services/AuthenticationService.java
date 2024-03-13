@@ -11,6 +11,8 @@ public interface AuthenticationService {
 
     User createSl(SignInRequest signInRequest);
 
+    User createAdmin(SignInRequest signInRequest);
+
     JwtAuthenticationResponse signIn(SignInRequest signInRequest);
     JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest);
 }
