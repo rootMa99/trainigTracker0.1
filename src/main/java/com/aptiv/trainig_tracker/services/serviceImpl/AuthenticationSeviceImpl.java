@@ -34,9 +34,17 @@ public class AuthenticationSeviceImpl implements AuthenticationService {
         user.setPassword(new BCryptPasswordEncoder().encode(changePwd.getPassword()));
         return userRepository.save(user);
     }
-
-    public User createUser(SignInRequest signInRequest) {
-        return null;
+    @Override
+    public User createSl(SignInRequest signInRequest) {
+        User userRoot = new User();
+        boolean userN = userRepository.findByUserName(signInRequest.getUserName()).isPresent();
+        if (!userN){
+            userRoot.setUserName(signInRequest.getUserName());
+            userRoot.setPassword(new BCryptPasswordEncoder().encode(signInRequest.getPassword()));
+            userRoot.setRole(Role.SHIFT_LEADER);
+            userRepository.save(userRoot);
+            return userRoot;
+        }throw new RuntimeException("this account already founded");
     }
 
     @Override
@@ -56,11 +64,11 @@ public class AuthenticationSeviceImpl implements AuthenticationService {
 
     @Override
     public JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
-        String userName= jwtService.extractUserName(refreshTokenRequest.getToken());
-        User user=userRepository.findByUserName(userName).orElseThrow();
-        if (jwtService.isTokenValid(refreshTokenRequest.getToken(), user)){
-            var jwt=jwtService.generateToken(user);
-            JwtAuthenticationResponse jwtAuthenticationResponse=new JwtAuthenticationResponse();
+        String userName = jwtService.extractUserName(refreshTokenRequest.getToken());
+        User user = userRepository.findByUserName(userName).orElseThrow();
+        if (jwtService.isTokenValid(refreshTokenRequest.getToken(), user)) {
+            var jwt = jwtService.generateToken(user);
+            JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
             jwtAuthenticationResponse.setToken(jwt);
             jwtAuthenticationResponse.setRefreshToken(refreshTokenRequest.getToken());
             return jwtAuthenticationResponse;
