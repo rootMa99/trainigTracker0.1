@@ -6,7 +6,6 @@ import com.aptiv.trainig_tracker.services.AuthenticationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/root")
@@ -20,11 +19,11 @@ public class RootController {
         return ResponseEntity.ok(authenticationService.createSl(signInRequest));
     }
 
-    @PostMapping("/createSl")
+    @PostMapping("/createAdmin")
     public ResponseEntity<User> createAdmin(@RequestBody SignInRequest signInRequest){
         return ResponseEntity.ok(authenticationService.createAdmin(signInRequest));
     }
-    @PostMapping("/createSl")
+    @PostMapping("/createTrainer")
     public ResponseEntity<User> createTrainer(@RequestBody SignInRequest signInRequest){
         return ResponseEntity.ok(authenticationService.createTrainer(signInRequest));
     }
