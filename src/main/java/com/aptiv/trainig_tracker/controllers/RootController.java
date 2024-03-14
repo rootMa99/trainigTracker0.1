@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class RootController {
 
     private AuthenticationService authenticationService;
-
+    
     @PostMapping("/createSl")
     public ResponseEntity<User> createSl(@RequestBody SignInRequest signInRequest){
         return ResponseEntity.ok(authenticationService.createSl(signInRequest));
