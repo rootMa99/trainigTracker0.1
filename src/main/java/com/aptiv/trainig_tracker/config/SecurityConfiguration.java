@@ -29,7 +29,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/auth/**", "/other", "/other/trainingTypeAndTitle")
+                        .requestMatchers("/auth/**", "/other", "/other/trainingTypeAndTitle", "/other/categoriesAndDepartments")
                         .permitAll()
                         .requestMatchers("/admin/**", "/employee/**")
                         .hasAnyAuthority(Role.ADMIN.name(), Role.ROOT.name()).requestMatchers("/other/addOrder",

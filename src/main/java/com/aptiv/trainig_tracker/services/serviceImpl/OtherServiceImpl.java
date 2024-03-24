@@ -15,10 +15,8 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class OtherServiceImpl implements OtherService {
-    //CategoryRepo categoryRepo;
     //CoordinatorRepo coordinatorRepo;
     //CrewRepo crewRepo;
-    //DepartmentRepo departmentRepo;
     //FamilyRepo familyRepo;
     //PosteRepo posteRepo;
     //TeamLeaderRepo teamLeaderRepo;
@@ -29,6 +27,8 @@ public class OtherServiceImpl implements OtherService {
     TrainingTitleRepo trainingTitleRepo;
     OrderRepo orderRepo;
     TrainingTypeRepo trainingTypeRepo;
+    CategoryRepo categoryRepo;
+    DepartmentRepo departmentRepo;
     @Override
     public StatusRest saveOrderToDb(List<OrderDto> orderDtoList) {
         List<OrderQualification> orderQualifications = new ArrayList<>();
@@ -206,5 +206,22 @@ public class OtherServiceImpl implements OtherService {
             tttds.add(tttd);
         }
         return  tttds;
+    }
+    @Override
+    public  HandyData getCategoriesAndDepartments(){
+        List<Category> categoryList= categoryRepo.findAll();
+        List<Department> departmentList= departmentRepo.findAll();
+        HandyData handyData=new HandyData();
+        List<String> categories=new ArrayList<>();
+        List<String> department=new ArrayList<>();
+        for (Category c: categoryList){
+            categories.add(c.getCategoryName());
+        }
+        for (Department d: departmentList){
+            department.add(d.getDepartmentName());
+        }
+        handyData.setCategories(categories);
+        handyData.setDepartments(department);
+        return handyData;
     }
 }
