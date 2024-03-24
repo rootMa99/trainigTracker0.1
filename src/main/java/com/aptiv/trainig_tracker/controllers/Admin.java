@@ -35,8 +35,8 @@ public class Admin {
     }
 
     @PostMapping(path = "/addTrainingToEmployees")
-    public void addTrainingToEmployees(@RequestBody TrainingDataFormatter trainingDataFormatter) {
-        trainingService.addTrainingToEmployees(trainingDataFormatter);
+    public TrainingDataFormatter addTrainingToEmployees(@RequestBody TrainingDataFormatter trainingDataFormatter) {
+        return trainingService.addTrainingToEmployees(trainingDataFormatter);
     }
 
     @GetMapping(path = "/trainingDateBetween")

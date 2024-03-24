@@ -15,7 +15,7 @@ public interface TrainingService {
 
     void saveTrainingDataToDb(MultipartFile file) throws IllegalAccessException;
 
-    void addTrainingToEmployees(TrainingDataFormatter trainingDataFormatter);
+    TrainingDataFormatter addTrainingToEmployees(TrainingDataFormatter trainingDataFormatter);
 
     List<TrainingRest> getAllTrainingBetweenDates(Date stratDate, Date endDate);
 

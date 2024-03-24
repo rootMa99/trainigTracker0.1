@@ -251,7 +251,7 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
-    public void addTrainingToEmployees(TrainingDataFormatter trainingDataFormatter) {
+    public TrainingDataFormatter addTrainingToEmployees(TrainingDataFormatter trainingDataFormatter) {
         Training trainingf =
                 trainingRepo.findByTrainingTypeTtNameAndTrainingTitleTrainingTitleNameAndDateDebutBetween(trainingDataFormatter.getTrainingType(),
                         trainingDataFormatter.getTrainingTitle(), trainingDataFormatter.getDdb(),
@@ -289,7 +289,8 @@ public class TrainingServiceImpl implements TrainingService {
                 }
             }
             training.setEmployees(employees);
-            trainingRepo.save(training);
+            training= trainingRepo.save(training);
+            trainingDataFormatter.setTrainingId(training.getTrainingId());
         } else {
             List<Employee> employees = trainingf.getEmployees();
             for (Long l : trainingDataFormatter.getMatricules()) {
@@ -301,9 +302,10 @@ public class TrainingServiceImpl implements TrainingService {
                 }
             }
             trainingf.setEmployees(employees);
-            trainingRepo.save(trainingf);
+            Training training= trainingRepo.save(trainingf);
+            trainingDataFormatter.setTrainingId(training.getTrainingId());
         }
-
+        return trainingDataFormatter;
     }
 
 
