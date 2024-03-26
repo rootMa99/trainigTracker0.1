@@ -45,5 +45,8 @@ public class RootController {
     public void updatePwd(@RequestParam String userName, @RequestParam String password){
         otherService.changePwd(userName, password);
     }
-
+    @PostMapping("/data/updateRootPwd")
+    public void updateRootPwd(@RequestParam String password){
+       authenticationService.changePassword(password);
+    }
 }

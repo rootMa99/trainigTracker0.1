@@ -2,7 +2,6 @@ package com.aptiv.trainig_tracker.services.serviceImpl;
 
 import com.aptiv.trainig_tracker.domain.Role;
 import com.aptiv.trainig_tracker.domain.User;
-import com.aptiv.trainig_tracker.models.ChangePwd;
 import com.aptiv.trainig_tracker.models.JwtAuthenticationResponse;
 import com.aptiv.trainig_tracker.models.RefreshTokenRequest;
 import com.aptiv.trainig_tracker.models.SignInRequest;
@@ -29,10 +28,14 @@ public class AuthenticationSeviceImpl implements AuthenticationService {
 
 
     @Override
-    public User changePassword(ChangePwd changePwd) {
+    public void changePassword(String changePwd) {
         User user = userRepository.findByRole(Role.ROOT);
-        user.setPassword(new BCryptPasswordEncoder().encode(changePwd.getPassword()));
-        return userRepository.save(user);
+        user.setPassword(new BCryptPasswordEncoder().encode(changePwd));
+        try{
+            userRepository.save(user);
+        }catch (Error e){
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
