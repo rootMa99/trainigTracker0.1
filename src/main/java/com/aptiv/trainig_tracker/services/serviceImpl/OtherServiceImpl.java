@@ -235,4 +235,16 @@ public class OtherServiceImpl implements OtherService {
         }
         return shiftLeaders;
     }
+    @Override
+    public List<UserRest> getUserRest(){
+        List<UserRest> userRests=new ArrayList<>();
+        List<User> users= userRepo.findAll();
+        for (User u: users){
+            UserRest ur=new UserRest();
+            ur.setUserName(u.getUsername());
+            ur.setRole(u.getRole().name());
+           userRests.add(ur);
+        }
+        return userRests;
+    }
 }

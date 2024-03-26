@@ -25,4 +25,6 @@ public interface OtherService {
     HandyData getCategoriesAndDepartments();
 
     List<String> getShiftLeaders();
+
+    List<UserRest> getUserRest();
 }
