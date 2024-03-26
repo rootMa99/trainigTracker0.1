@@ -23,4 +23,6 @@ public interface OtherService {
     List<TrainingTypeAndTitlesDto> getAllTrainingsTypeAndTitles();
 
     HandyData getCategoriesAndDepartments();
+
+    List<String> getShiftLeaders();
 }

@@ -29,6 +29,7 @@ public class OtherServiceImpl implements OtherService {
     TrainingTypeRepo trainingTypeRepo;
     CategoryRepo categoryRepo;
     DepartmentRepo departmentRepo;
+    UserRepo userRepo;
     @Override
     public StatusRest saveOrderToDb(List<OrderDto> orderDtoList) {
         List<OrderQualification> orderQualifications = new ArrayList<>();
@@ -223,5 +224,15 @@ public class OtherServiceImpl implements OtherService {
         handyData.setCategories(categories);
         handyData.setDepartments(department);
         return handyData;
+    }
+
+    @Override
+    public List<String> getShiftLeaders(){
+        List<String> shiftLeaders= new ArrayList<>();
+        List<ShiftLeader> shiftLeaders1=shiftLeaderRepo.findAll();
+        for (ShiftLeader s:shiftLeaders1){
+            shiftLeaders.add(s.getName());
+        }
+        return shiftLeaders;
     }
 }
