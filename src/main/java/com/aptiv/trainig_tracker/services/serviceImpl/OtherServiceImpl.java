@@ -6,11 +6,13 @@ import com.aptiv.trainig_tracker.repositories.*;
 import com.aptiv.trainig_tracker.services.OtherService;
 import com.aptiv.trainig_tracker.ui.Utils;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -247,4 +249,18 @@ public class OtherServiceImpl implements OtherService {
         }
         return userRests;
     }
+
+    @Override
+    public void changePwd(String name, String pwd){
+        Optional<User> user = userRepo.findByUserName(name);
+
+        if (user.isPresent()) {
+            User us = user.get();
+            us.setPassword(new BCryptPasswordEncoder().encode(pwd));
+            userRepo.save(us);
+        } else {
+            throw new RuntimeException("no user found");
+        }
+    }
+
 }

@@ -27,4 +27,6 @@ public interface OtherService {
     List<String> getShiftLeaders();
 
     List<UserRest> getUserRest();
+
+    void changePwd(String name, String pwd);
 }
