@@ -34,8 +34,9 @@ public class OtherController {
     }
 
     @GetMapping(path = "/orders")
-    public List<OrderRest> getAllOrderBySl(@RequestParam String shiftLeader) {
-        return otherService.getAllOrderBySl(shiftLeader);
+    public List<OrderRest> getAllOrderBySl(@RequestParam String shiftLeader, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
+                                           @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate) {
+        return otherService.getAllOrderBySl(shiftLeader, startDate, endDate);
     }
 
     @GetMapping(path = "/orders/dateBetween")

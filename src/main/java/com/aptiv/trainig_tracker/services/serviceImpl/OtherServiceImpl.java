@@ -112,9 +112,13 @@ public class OtherServiceImpl implements OtherService {
     }
 
     @Override
-    public List<OrderRest> getAllOrderBySl(String slName) {
-        ShiftLeader shiftLeader = shiftLeaderRepo.findByName(slName);
+    public List<OrderRest> getAllOrderBySl(String slName, Date startDate, Date endDate) {
+        ShiftLeader shiftLeader = shiftLeaderRepo.findByNameAndOrderQualificationsOrderDateBetween(slName,startDate,
+                endDate);
         List<OrderRest> orderRests = new ArrayList<>();
+        if (shiftLeader==null){
+            return orderRests;
+        }
         if (!shiftLeader.getOrderQualifications().isEmpty()) {
             for (OrderQualification o : shiftLeader.getOrderQualifications()) {
                 orderRests.add(getOrderRest(o));

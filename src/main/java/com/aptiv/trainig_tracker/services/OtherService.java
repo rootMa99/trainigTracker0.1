@@ -10,7 +10,7 @@ public interface OtherService {
 
     OrderRest getOderById(String orderId);
 
-    List<OrderRest> getAllOrderBySl(String slName);
+    List<OrderRest> getAllOrderBySl(String slName,Date startDate, Date endDate);
 
     List<OrderRest> getOrdersByDateBetween(Date startDate, Date endDate);
 
