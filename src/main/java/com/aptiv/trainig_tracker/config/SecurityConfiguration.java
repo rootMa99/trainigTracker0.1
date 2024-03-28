@@ -33,7 +33,7 @@ public class SecurityConfiguration {
                         .permitAll()
                         .requestMatchers("/admin/**", "/employee/**")
                         .hasAnyAuthority(Role.ADMIN.name(), Role.ROOT.name()).requestMatchers("/other/addOrder",
-                                "/other/EditOrder", "/other/deleteOrder", "/deleteOrders").hasAnyAuthority(Role.SHIFT_LEADER.name()).requestMatchers("/other/order", "/other/orders", "/other/orders/dateBetween").hasAnyAuthority(Role.SHIFT_LEADER.name(), Role.TRAINER.name()).requestMatchers("/root/**").hasAnyAuthority(Role.ROOT.name())
+                                "/other/EditOrder", "/other/deleteOrder", "/deleteOrders").hasAnyAuthority(Role.SHIFT_LEADER.name()).requestMatchers("/other/order", "/other/orders", "/other/orders/dateBetween").hasAnyAuthority(Role.SHIFT_LEADER.name(), Role.TRAINER.name()).requestMatchers("/root/data/shiftleaders").hasAnyAuthority(Role.ROOT.name(), Role.TRAINER.name()).requestMatchers("/root/**").hasAnyAuthority(Role.ROOT.name())
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->
