@@ -103,6 +103,7 @@ public class OtherServiceImpl implements OtherService {
         orderRest.setQualificationDate(order.getOrderDate());
         orderRest.setSubmitDate(order.getOrderDateSubmit());
         orderRest.setShift(order.getShift());
+        orderRest.setStatus(order.getStatus());
         List<EmployeeRest> ers = new ArrayList<>();
         for (Employee e : order.getEmployees()) {
             ers.add(getEmployeeRest(e));

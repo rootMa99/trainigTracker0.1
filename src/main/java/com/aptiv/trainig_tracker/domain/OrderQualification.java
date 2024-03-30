@@ -38,4 +38,5 @@ public class OrderQualification {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shiftLeader")
     private ShiftLeader shiftLeader;
+    private String status;
 }
