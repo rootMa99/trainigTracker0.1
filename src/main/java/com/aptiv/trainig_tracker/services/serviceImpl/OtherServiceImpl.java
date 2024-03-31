@@ -278,6 +278,15 @@ public class OtherServiceImpl implements OtherService {
                 orderRepo.save(oq);
             }
         }
+    }
 
+    public void changeStatus(List<String> orderIds, String status){
+        for (String id:orderIds){
+            OrderQualification oq=orderRepo.findByOrderId(id);
+            if (oq!=null){
+                oq.setStatus(status);
+                orderRepo.save(oq);
+            }
+        }
     }
 }
