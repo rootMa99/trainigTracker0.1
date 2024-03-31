@@ -68,4 +68,14 @@ public class OtherController {
         return otherService.getCategoriesAndDepartments();
     }
 
+
+    @PutMapping(path = "/updateOrder/trainer")
+    public void updateOrderDateByTrainer(@RequestBody List<String> ordersIDs, @RequestParam @DateTimeFormat(pattern =
+            "yyyy-MM-dd") Date endDate){
+        try {
+            otherService.editDateByTrainer(endDate, ordersIDs);
+        }catch (Error e){
+            throw new RuntimeException(e);
+        }
+    }
 }
