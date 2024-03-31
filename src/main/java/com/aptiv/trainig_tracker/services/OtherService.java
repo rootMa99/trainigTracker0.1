@@ -31,4 +31,6 @@ public interface OtherService {
     void changePwd(String name, String pwd);
 
     void editDateByTrainer(Date updatedDate, List<String> orderTds);
+
+    void changeStatus(List<String> orderIds, String status);
 }

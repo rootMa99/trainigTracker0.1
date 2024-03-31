@@ -59,22 +59,33 @@ public class OtherController {
     public void deleteOrdersByIds(@RequestBody List<String> ordersIDs) {
         otherService.deleteMultiOrder(ordersIDs);
     }
+
     @GetMapping(path = "/trainingTypeAndTitle")
-    public List<TrainingTypeAndTitlesDto> getTrainingsTypesAndTitles(){
+    public List<TrainingTypeAndTitlesDto> getTrainingsTypesAndTitles() {
         return otherService.getAllTrainingsTypeAndTitles();
     }
+
     @GetMapping(path = "/categoriesAndDepartments")
-    public HandyData getHandyData(){
+    public HandyData getHandyData() {
         return otherService.getCategoriesAndDepartments();
     }
 
 
     @PutMapping(path = "/updateOrder/trainer")
     public void updateOrderDateByTrainer(@RequestBody List<String> ordersIDs, @RequestParam @DateTimeFormat(pattern =
-            "yyyy-MM-dd") Date endDate){
+            "yyyy-MM-dd") Date endDate) {
         try {
             otherService.editDateByTrainer(endDate, ordersIDs);
-        }catch (Error e){
+        } catch (Error e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PutMapping(path = "/updateOrder/status")
+    public void updateStatusByTrainer(@RequestBody List<String> ordersIDs, String status) {
+        try {
+            otherService.changeStatus(ordersIDs, status);
+        } catch (Error e) {
             throw new RuntimeException(e);
         }
     }

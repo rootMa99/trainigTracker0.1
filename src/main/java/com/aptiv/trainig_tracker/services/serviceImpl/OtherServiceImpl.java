@@ -32,6 +32,7 @@ public class OtherServiceImpl implements OtherService {
     CategoryRepo categoryRepo;
     DepartmentRepo departmentRepo;
     UserRepo userRepo;
+
     @Override
     public StatusRest saveOrderToDb(List<OrderDto> orderDtoList) {
         List<OrderQualification> orderQualifications = new ArrayList<>();
@@ -114,10 +115,10 @@ public class OtherServiceImpl implements OtherService {
 
     @Override
     public List<OrderRest> getAllOrderBySl(String slName, Date startDate, Date endDate) {
-        ShiftLeader shiftLeader = shiftLeaderRepo.findByNameAndOrderQualificationsOrderDateBetween(slName,startDate,
+        ShiftLeader shiftLeader = shiftLeaderRepo.findByNameAndOrderQualificationsOrderDateBetween(slName, startDate,
                 endDate);
         List<OrderRest> orderRests = new ArrayList<>();
-        if (shiftLeader==null){
+        if (shiftLeader == null) {
             return orderRests;
         }
         if (!shiftLeader.getOrderQualifications().isEmpty()) {
@@ -150,13 +151,13 @@ public class OtherServiceImpl implements OtherService {
             List<QualificationRest> qualificationRests = new ArrayList<>();
             List<Employee> employees = new ArrayList<>();
             List<EmployeeRest> employeeRests = new ArrayList<>();
-            if (o.getShift()!=null) {
+            if (o.getShift() != null) {
                 orderQualification.setShift(o.getShift());
             }
-            if (o.getShiftLeaderName()!=null) {
+            if (o.getShiftLeaderName() != null) {
                 orderQualification.setShiftLeader(shiftLeaderRepo.findByName(o.getShiftLeaderName()));
             }
-            if (o.getQualification()!=null) {
+            if (o.getQualification() != null) {
                 orderQualification.setTrainingTitle(trainingTitleRepo.findByTrainingTitleName(o.getQualification()));
             }
             if (o.getOrderdate() != null) {
@@ -186,46 +187,51 @@ public class OtherServiceImpl implements OtherService {
         }
         return statusRest;
     }
+
     @Override
-    public void deleteOrder(String orderID){
+    public void deleteOrder(String orderID) {
         OrderQualification order = orderRepo.findByOrderId(orderID);
         if (order != null) {
             orderRepo.delete(order);
-        };
+        }
+        ;
     }
+
     @Override
-    public void deleteMultiOrder(List<String> orderIds){
-        for (String orderID: orderIds){
+    public void deleteMultiOrder(List<String> orderIds) {
+        for (String orderID : orderIds) {
             deleteOrder(orderID);
         }
     }
+
     @Override
-    public List<TrainingTypeAndTitlesDto> getAllTrainingsTypeAndTitles(){
-        List<TrainingType> trainingTypes= trainingTypeRepo.findAll();
-        List<TrainingTypeAndTitlesDto>tttds=new ArrayList<>();
-        for (TrainingType tp: trainingTypes){
-            TrainingTypeAndTitlesDto tttd=new TrainingTypeAndTitlesDto();
+    public List<TrainingTypeAndTitlesDto> getAllTrainingsTypeAndTitles() {
+        List<TrainingType> trainingTypes = trainingTypeRepo.findAll();
+        List<TrainingTypeAndTitlesDto> tttds = new ArrayList<>();
+        for (TrainingType tp : trainingTypes) {
+            TrainingTypeAndTitlesDto tttd = new TrainingTypeAndTitlesDto();
             tttd.setTrainingType(tp.getTtName());
-            List<String> tts=new ArrayList<>();
-            for (TrainingTitle tl: tp.getTrainingTitles()){
+            List<String> tts = new ArrayList<>();
+            for (TrainingTitle tl : tp.getTrainingTitles()) {
                 tts.add(tl.getTrainingTitleName());
             }
             tttd.setTrainingTitles(tts);
             tttds.add(tttd);
         }
-        return  tttds;
+        return tttds;
     }
+
     @Override
-    public  HandyData getCategoriesAndDepartments(){
-        List<Category> categoryList= categoryRepo.findAll();
-        List<Department> departmentList= departmentRepo.findAll();
-        HandyData handyData=new HandyData();
-        List<String> categories=new ArrayList<>();
-        List<String> department=new ArrayList<>();
-        for (Category c: categoryList){
+    public HandyData getCategoriesAndDepartments() {
+        List<Category> categoryList = categoryRepo.findAll();
+        List<Department> departmentList = departmentRepo.findAll();
+        HandyData handyData = new HandyData();
+        List<String> categories = new ArrayList<>();
+        List<String> department = new ArrayList<>();
+        for (Category c : categoryList) {
             categories.add(c.getCategoryName());
         }
-        for (Department d: departmentList){
+        for (Department d : departmentList) {
             department.add(d.getDepartmentName());
         }
         handyData.setCategories(categories);
@@ -234,29 +240,30 @@ public class OtherServiceImpl implements OtherService {
     }
 
     @Override
-    public List<String> getShiftLeaders(){
-        List<String> shiftLeaders= new ArrayList<>();
-        List<ShiftLeader> shiftLeaders1=shiftLeaderRepo.findAll();
-        for (ShiftLeader s:shiftLeaders1){
+    public List<String> getShiftLeaders() {
+        List<String> shiftLeaders = new ArrayList<>();
+        List<ShiftLeader> shiftLeaders1 = shiftLeaderRepo.findAll();
+        for (ShiftLeader s : shiftLeaders1) {
             shiftLeaders.add(s.getName());
         }
         return shiftLeaders;
     }
+
     @Override
-    public List<UserRest> getUserRest(){
-        List<UserRest> userRests=new ArrayList<>();
-        List<User> users= userRepo.findAll();
-        for (User u: users){
-            UserRest ur=new UserRest();
+    public List<UserRest> getUserRest() {
+        List<UserRest> userRests = new ArrayList<>();
+        List<User> users = userRepo.findAll();
+        for (User u : users) {
+            UserRest ur = new UserRest();
             ur.setUserName(u.getUsername());
             ur.setRole(u.getRole().name());
-           userRests.add(ur);
+            userRests.add(ur);
         }
         return userRests;
     }
 
     @Override
-    public void changePwd(String name, String pwd){
+    public void changePwd(String name, String pwd) {
         Optional<User> user = userRepo.findByUserName(name);
 
         if (user.isPresent()) {
@@ -269,10 +276,10 @@ public class OtherServiceImpl implements OtherService {
     }
 
     @Override
-    public void editDateByTrainer(Date updatedDate, List<String> orderTds){
-        for (String id:orderTds){
-            OrderQualification oq=orderRepo.findByOrderId(id);
-            if (oq!=null){
+    public void editDateByTrainer(Date updatedDate, List<String> orderTds) {
+        for (String id : orderTds) {
+            OrderQualification oq = orderRepo.findByOrderId(id);
+            if (oq != null) {
                 oq.setOrderDate(updatedDate);
                 oq.setStatus("Confirmed");
                 orderRepo.save(oq);
@@ -280,10 +287,11 @@ public class OtherServiceImpl implements OtherService {
         }
     }
 
-    public void changeStatus(List<String> orderIds, String status){
-        for (String id:orderIds){
-            OrderQualification oq=orderRepo.findByOrderId(id);
-            if (oq!=null){
+    @Override
+    public void changeStatus(List<String> orderIds, String status) {
+        for (String id : orderIds) {
+            OrderQualification oq = orderRepo.findByOrderId(id);
+            if (oq != null) {
                 oq.setStatus(status);
                 orderRepo.save(oq);
             }
