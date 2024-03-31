@@ -29,4 +29,6 @@ public interface OtherService {
     List<UserRest> getUserRest();
 
     void changePwd(String name, String pwd);
+
+    void editDateByTrainer(Date updatedDate, List<String> orderTds);
 }

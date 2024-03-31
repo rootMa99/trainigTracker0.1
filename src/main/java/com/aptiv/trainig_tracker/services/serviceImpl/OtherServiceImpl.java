@@ -268,4 +268,16 @@ public class OtherServiceImpl implements OtherService {
         }
     }
 
+    @Override
+    public void editDateByTrainer(Date updatedDate, List<String> orderTds){
+        for (String id:orderTds){
+            OrderQualification oq=orderRepo.findByOrderId(id);
+            if (oq!=null){
+                oq.setOrderDate(updatedDate);
+                oq.setStatus("Confirmed");
+                orderRepo.save(oq);
+            }
+        }
+
+    }
 }
