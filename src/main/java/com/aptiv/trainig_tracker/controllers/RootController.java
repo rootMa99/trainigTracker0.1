@@ -49,4 +49,6 @@ public class RootController {
     public void updateRootPwd(@RequestParam String password){
        authenticationService.changePassword(password);
     }
+
+
 }

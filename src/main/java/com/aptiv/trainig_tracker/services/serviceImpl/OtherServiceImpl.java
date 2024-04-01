@@ -297,4 +297,16 @@ public class OtherServiceImpl implements OtherService {
             }
         }
     }
+
+    @Override
+    public void deleteUser(String name){
+        Optional<User> user = userRepo.findByUserName(name);
+
+        if (user.isPresent()) {
+            User us = user.get();
+            userRepo.delete(us);
+        } else {
+            throw new RuntimeException("no user found");
+        }
+    }
 }

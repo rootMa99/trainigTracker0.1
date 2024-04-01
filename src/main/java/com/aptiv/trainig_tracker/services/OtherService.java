@@ -33,4 +33,6 @@ public interface OtherService {
     void editDateByTrainer(Date updatedDate, List<String> orderTds);
 
     void changeStatus(List<String> orderIds, String status);
+
+    void deleteUser(String name);
 }
