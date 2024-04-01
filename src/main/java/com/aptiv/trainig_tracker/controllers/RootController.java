@@ -50,5 +50,10 @@ public class RootController {
        authenticationService.changePassword(password);
     }
 
+    @DeleteMapping("/data/deleteUser")
+    public void deleteUser(@RequestParam String un){
+        otherService.deleteUser(un);
+    }
+
 
 }
