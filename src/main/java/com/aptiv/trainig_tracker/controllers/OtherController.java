@@ -82,7 +82,7 @@ public class OtherController {
     }
 
     @PutMapping(path = "/updateOrder/status")
-    public void updateStatusByTrainer(@RequestBody List<String> ordersIDs, String status) {
+    public void updateStatusByTrainer(@RequestBody List<String> ordersIDs, @RequestParam String status) {
         try {
             otherService.changeStatus(ordersIDs, status);
         } catch (Error e) {
