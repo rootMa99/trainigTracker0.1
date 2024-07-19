@@ -54,5 +54,7 @@ public class Employee {
     @JoinTable(name = "Order_Employee_Mapping", joinColumns = @JoinColumn(name = "matricule"),
             inverseJoinColumns = @JoinColumn(name = "order_id"))
     private List<OrderQualification> orderQualifications;
+    @OneToMany(mappedBy = "employee")
+    private List<QualificationEmployee> qualificationEmployees;
 
 }

@@ -14,5 +14,4 @@ public class Qualification {
     private String name;
     @OneToMany(mappedBy = "qualification")
     private List<QualificationEmployee> qualificationEmployees;
-
 }
