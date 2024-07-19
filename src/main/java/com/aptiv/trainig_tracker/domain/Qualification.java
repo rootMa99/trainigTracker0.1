@@ -12,7 +12,7 @@ public class Qualification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-
+    @OneToMany(mappedBy = "qualification")
     private List<QualificationEmployee> qualificationEmployees;
 
 }
