@@ -10,7 +10,7 @@ public class QualificationEmployee {
     private QualificationEmployeeId id;
 
     @ManyToOne
-    @MapsId("employeeId")
+    @MapsId("matricule")
     @JoinColumn(name = "employee_id")
     private Employee employee;
 

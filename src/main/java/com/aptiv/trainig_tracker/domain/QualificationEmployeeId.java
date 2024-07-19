@@ -10,5 +10,5 @@ public class QualificationEmployeeId implements Serializable {
     @Column(name = "matricule")
     private Long matricule;
     @Column(name = "qualification_id")
-    private Long QualificationId;
+    private Long qualificationId;
 }
