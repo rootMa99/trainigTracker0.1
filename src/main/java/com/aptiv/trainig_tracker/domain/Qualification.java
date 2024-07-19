@@ -13,4 +13,6 @@ public class Qualification {
     private Long id;
     private String name;
 
+    private List<QualificationEmployee> qualificationEmployees;
+
 }
