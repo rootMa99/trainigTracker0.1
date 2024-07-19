@@ -19,4 +19,5 @@ public class QualificationEmployee {
     @JoinColumn(name = "qualification_id")
     private Qualification qualification;
 
+
 }
