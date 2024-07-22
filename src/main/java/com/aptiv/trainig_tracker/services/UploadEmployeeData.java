@@ -394,27 +394,28 @@ public class UploadEmployeeData {
                         }
                         case 3->{
                             if (cell.getCellType()!=BLANK){
-                                trainings.add("Qualification FA CE");
+                                trainings.add(new QualificationModel("Qualification FA CE", cell.getStringCellValue()));
                             }
                         }
                         case 4->{
                             if (cell.getCellType()!=BLANK){
-                                trainings.add("Qualification FA CG");
+                                trainings.add(new QualificationModel("Qualification FA CG", cell.getStringCellValue()));
                             }
                         }
                         case 6->{
                             if (cell.getCellType()!=BLANK){
-                                trainings.add("Qualification FA Réparation (Retouche du cablage)");
+                                trainings.add(new QualificationModel("Qualification FA Réparation (Retouche du " +
+                                        "cablage)", cell.getStringCellValue()));
                             }
                         }
                         case 7->{
                             if (cell.getCellType()!=BLANK){
-                                trainings.add("Qualification FA Sealing");
+                                trainings.add(new QualificationModel("Qualification FA Sealing", cell.getStringCellValue()));
                             }
                         }
                         case 8->{
                             if (cell.getCellType()!=BLANK){
-                                trainings.add("Qualification FA Emballage");
+                                trainings.add(new QualificationModel("Qualification FA Emballage", cell.getStringCellValue()));
                             }
                         }
                         case 9->{
