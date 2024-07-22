@@ -29,6 +29,14 @@ public class TrainingServiceImpl implements TrainingService {
     TrainingTypeRepo trainingTypeRepo;
     TrainingTitleRepo trainingTitleRepo;
     TrainingRepo trainingRepo;
+@Override
+    public void qualificationData(MultipartFile file) throws IOException{
+        if (UploadEmployeeData.isValidFormat(file)) {
+            List<FlexData>lfd=UploadEmployeeData.getQualifications(file.getInputStream());
+            System.out.println(lfd);
+        }
+    }
+
 
     @Override
     public void faMatrixBackup(MultipartFile file) throws IOException {

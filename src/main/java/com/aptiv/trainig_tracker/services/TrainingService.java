@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.List;
 
 public interface TrainingService {
+    void qualificationData(MultipartFile file) throws IOException;
+
     void faMatrixBackup(MultipartFile file) throws IOException;
 
     void saveTrainingDataToDb(MultipartFile file) throws IllegalAccessException;
