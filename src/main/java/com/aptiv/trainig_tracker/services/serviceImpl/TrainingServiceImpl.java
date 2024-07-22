@@ -1,10 +1,7 @@
 package com.aptiv.trainig_tracker.services.serviceImpl;
 
 
-import com.aptiv.trainig_tracker.domain.Employee;
-import com.aptiv.trainig_tracker.domain.Training;
-import com.aptiv.trainig_tracker.domain.TrainingTitle;
-import com.aptiv.trainig_tracker.domain.TrainingType;
+import com.aptiv.trainig_tracker.domain.*;
 import com.aptiv.trainig_tracker.models.*;
 import com.aptiv.trainig_tracker.repositories.*;
 import com.aptiv.trainig_tracker.services.TrainingService;
@@ -55,12 +52,43 @@ public class TrainingServiceImpl implements TrainingService {
         if (UploadEmployeeData.isValidFormat(file)) {
             List<FlexData> lfd = UploadEmployeeData.getQualifications(file.getInputStream());
 
-            for(FlexData fd:lfd){
+            for (FlexData fd : lfd) {
                 System.out.println(fd);
+                Employee em = employeeRepo.findByMatricule(fd.getMatricule());
+                if (em != null) {
+                    for (QualificationModel qm : fd.getQualificationModels()) {
+                        Qualification q = qualificationRepo.findByName(qm.getQualificationName());
+                        if (q == null) {
+                            Qualification qmn = new Qualification();
+                            qmn.setName(qm.getQualificationName());
+                            q = qualificationRepo.save(qmn);
+                        }
+                        QualificationEmployee qe = new QualificationEmployee();
+                        QualificationEmployeeId id = new QualificationEmployeeId(em.getMatricule(), q.getId());
+                        qe.setId(id);
+                        qe.setEmployee(em);
+                        qe.setQualification(q);
+                        switch (qm.getStatus()) {
+                            case "R":
+                                qe.setStatus(Status.R);
+                                break;
+                            case "C":
+                                qe.setStatus(Status.C);
+                                break;
+                            case "F":
+                                qe.setStatus(Status.F);
+                                break;
+                            case "X":
+                                qe.setStatus(Status.X);
+                                break;
+                            default:
+                        }
+                        qualificationEmployeeRepo.save(qe);
+                    }
+                }
             }
         }
     }
-
 
 
     @Override
