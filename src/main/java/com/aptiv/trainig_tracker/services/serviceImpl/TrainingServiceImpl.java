@@ -6,10 +6,7 @@ import com.aptiv.trainig_tracker.domain.Training;
 import com.aptiv.trainig_tracker.domain.TrainingTitle;
 import com.aptiv.trainig_tracker.domain.TrainingType;
 import com.aptiv.trainig_tracker.models.*;
-import com.aptiv.trainig_tracker.repositories.EmployeeRepo;
-import com.aptiv.trainig_tracker.repositories.TrainingRepo;
-import com.aptiv.trainig_tracker.repositories.TrainingTitleRepo;
-import com.aptiv.trainig_tracker.repositories.TrainingTypeRepo;
+import com.aptiv.trainig_tracker.repositories.*;
 import com.aptiv.trainig_tracker.services.TrainingService;
 import com.aptiv.trainig_tracker.services.UploadEmployeeData;
 import com.aptiv.trainig_tracker.ui.Utils;
@@ -29,14 +26,37 @@ public class TrainingServiceImpl implements TrainingService {
     TrainingTypeRepo trainingTypeRepo;
     TrainingTitleRepo trainingTitleRepo;
     TrainingRepo trainingRepo;
-@Override
-    public void qualificationData(MultipartFile file) throws IOException{
+    QualificationEmployeeRepo qualificationEmployeeRepo;
+    QualificationRepo qualificationRepo;
+
+    private static List<EmployeeRest> getEmployeeRests(Training t) {
+        List<EmployeeRest> employeeRests = new ArrayList<>();
+        for (Employee e : t.getEmployees()) {
+            EmployeeRest er = new EmployeeRest();
+            er.setMatricule(e.getMatricule());
+            er.setNom(e.getNom());
+            er.setPrenom(e.getPrenom());
+            er.setCategory(e.getCategory().getCategoryName());
+            er.setFonction(e.getFonctionEntreprise());
+            er.setDepartment(e.getDepartment().getDepartmentName());
+            er.setPoste(e.getPoste().getPosteName());
+            er.setCrew(e.getCrew().getCrewName());
+            er.setFamily(e.getFamily().getFamilyName());
+            er.setCoordinator(e.getCoordinator().getName());
+            er.setShiftLeader(e.getShiftLeader().getName());
+            er.setTeamLeader(e.getTeamLeader().getName());
+            employeeRests.add(er);
+        }
+        return employeeRests;
+    }
+
+    @Override
+    public void qualificationData(MultipartFile file) throws IOException {
         if (UploadEmployeeData.isValidFormat(file)) {
-            List<FlexData>lfd=UploadEmployeeData.getQualifications(file.getInputStream());
+            List<FlexData> lfd = UploadEmployeeData.getQualifications(file.getInputStream());
             System.out.println(lfd);
         }
     }
-
 
     @Override
     public void faMatrixBackup(MultipartFile file) throws IOException {
@@ -66,7 +86,7 @@ public class TrainingServiceImpl implements TrainingService {
 
                 for (Long matricule : faMatrixGlobalTraining.getMatricules()) {
                     Employee employee = employeeRepo.findByMatricule(matricule);
-                    if(employee!=null){
+                    if (employee != null) {
                         assignTrainingToEmployee(employee, training, faMatrixGlobalTraining.getTraining());
                     }
                 }
@@ -74,12 +94,14 @@ public class TrainingServiceImpl implements TrainingService {
 
         }
     }
+
     private void printFaMatrixGlobalTrainingDetails(FaMatrixGlobalTraining faMatrixGlobalTraining) {
         System.out.println("Training: " + faMatrixGlobalTraining.getTraining());
         System.out.println("Matricules: " + faMatrixGlobalTraining.getMatricules());
         System.out.println(faMatrixGlobalTraining.getMatricules().size());
         System.out.println();
     }
+
     private Training createTrainingFromFaMatrixGlobalTraining(FaMatrixGlobalTraining faMatrixGlobalTraining) {
         Training training = new Training();
         training.setTrainingId(utils.getGeneratedId(22));
@@ -95,6 +117,7 @@ public class TrainingServiceImpl implements TrainingService {
         training.setPrestataire("APTIV");
         return training;
     }
+
     private void assignTrainingToEmployee(Employee employee, Training training, String trainingName) {
         boolean found = employee.getTrainings().stream()
                 .anyMatch(tf -> Objects.equals(tf.getTrainingTitle().getTrainingTitleName(), trainingName));
@@ -297,7 +320,7 @@ public class TrainingServiceImpl implements TrainingService {
                 }
             }
             training.setEmployees(employees);
-            training= trainingRepo.save(training);
+            training = trainingRepo.save(training);
             trainingDataFormatter.setTrainingId(training.getTrainingId());
         } else {
             List<Employee> employees = trainingf.getEmployees();
@@ -310,12 +333,11 @@ public class TrainingServiceImpl implements TrainingService {
                 }
             }
             trainingf.setEmployees(employees);
-            Training training= trainingRepo.save(trainingf);
+            Training training = trainingRepo.save(trainingf);
             trainingDataFormatter.setTrainingId(training.getTrainingId());
         }
         return trainingDataFormatter;
     }
-
 
     @Override
     public List<TrainingRest> getAllTrainingBetweenDates(Date stratDate, Date endDate) {
@@ -338,27 +360,6 @@ public class TrainingServiceImpl implements TrainingService {
             trs.add(tr);
         }
         return trs;
-    }
-
-    private static List<EmployeeRest> getEmployeeRests(Training t) {
-        List<EmployeeRest> employeeRests = new ArrayList<>();
-        for (Employee e : t.getEmployees()) {
-            EmployeeRest er = new EmployeeRest();
-            er.setMatricule(e.getMatricule());
-            er.setNom(e.getNom());
-            er.setPrenom(e.getPrenom());
-            er.setCategory(e.getCategory().getCategoryName());
-            er.setFonction(e.getFonctionEntreprise());
-            er.setDepartment(e.getDepartment().getDepartmentName());
-            er.setPoste(e.getPoste().getPosteName());
-            er.setCrew(e.getCrew().getCrewName());
-            er.setFamily(e.getFamily().getFamilyName());
-            er.setCoordinator(e.getCoordinator().getName());
-            er.setShiftLeader(e.getShiftLeader().getName());
-            er.setTeamLeader(e.getTeamLeader().getName());
-            employeeRests.add(er);
-        }
-        return employeeRests;
     }
 
     @Override
