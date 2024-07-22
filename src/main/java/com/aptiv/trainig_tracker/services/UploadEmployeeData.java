@@ -1,10 +1,7 @@
 package com.aptiv.trainig_tracker.services;
 
 
-import com.aptiv.trainig_tracker.models.DataExcelEmployee;
-import com.aptiv.trainig_tracker.models.FaMatrixGlobal;
-import com.aptiv.trainig_tracker.models.FlexData;
-import com.aptiv.trainig_tracker.models.TrainingFromExcel;
+import com.aptiv.trainig_tracker.models.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -367,8 +364,8 @@ public class UploadEmployeeData {
                 }
                 Iterator<Cell> cellIterator = row.iterator();
                 int cellIndex = 0;
-                FaMatrixGlobal faMatrixGlobal=new FaMatrixGlobal();
-                List<String> trainings=new ArrayList<>();
+                FlexData faMatrixGlobal=new FlexData();
+                List<QualificationModel> trainings=new ArrayList<>();
                 while (cellIterator.hasNext() && !done) {
                     Cell cell = cellIterator.next();
                     switch (cellIndex) {
@@ -386,12 +383,13 @@ public class UploadEmployeeData {
                         }
                         case 1->{
                             if (cell.getCellType() != BLANK) {
-                                trainings.add("Qualification FA Test fusible");
+                                trainings.add(new QualificationModel("Qualification FA Test fusible",
+                                        cell.getStringCellValue()));
                             }
                         }
                         case 2->{
                             if (cell.getCellType() != BLANK) {
-                                trainings.add("Qualification FA CM");
+                                trainings.add(new QualificationModel("Qualification FA CM", cell.getStringCellValue()));
                             }
                         }
                         case 3->{
