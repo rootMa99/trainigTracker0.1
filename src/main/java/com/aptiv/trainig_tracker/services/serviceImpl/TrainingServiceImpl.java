@@ -9,6 +9,7 @@ import com.aptiv.trainig_tracker.services.UploadEmployeeData;
 import com.aptiv.trainig_tracker.ui.Utils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -47,6 +48,8 @@ public class TrainingServiceImpl implements TrainingService {
         return employeeRests;
     }
 
+
+    @Transactional
     @Override
     public void qualificationData(MultipartFile file) throws IOException {
         if (!UploadEmployeeData.isValidFormat(file)) {
@@ -54,21 +57,45 @@ public class TrainingServiceImpl implements TrainingService {
         }
 
         List<FlexData> lfd = UploadEmployeeData.getQualifications(file.getInputStream());
+        if (lfd.isEmpty()) {
+            return;
+        }
+
+        Map<Long, Employee> employeeCache = new HashMap<>();
+        Map<String, Qualification> qualificationCache = new HashMap<>();
+
+        // Bulk fetch employees
+        List<Long> matricules = lfd.stream().map(FlexData::getMatricule).distinct().toList();
+        List<Employee> employees = employeeRepo.findByMatriculeIn(matricules);
+        for (Employee em : employees) {
+            employeeCache.put(em.getMatricule(), em);
+        }
+
+        // Bulk fetch qualifications
+        List<String> qualificationNames = lfd.stream()
+                .flatMap(fd -> fd.getQualificationModels().stream())
+                .map(QualificationModel::getQualificationName)
+                .distinct()
+                .toList();
+        List<Qualification> qualifications = qualificationRepo.findByNameIn(qualificationNames);
+        for (Qualification q : qualifications) {
+            qualificationCache.put(q.getName(), q);
+        }
 
         for (FlexData fd : lfd) {
-            System.out.println(fd);
-            Employee em = employeeRepo.findByMatricule(fd.getMatricule());
+            Employee em = employeeCache.get(fd.getMatricule());
             if (em == null || fd.getQualificationModels().isEmpty()) {
                 System.err.println("Employee not found for matricule: " + fd.getMatricule());
                 continue;
             }
 
             for (QualificationModel qm : fd.getQualificationModels()) {
-                Qualification q = qualificationRepo.findByName(qm.getQualificationName());
+                Qualification q = qualificationCache.get(qm.getQualificationName());
                 if (q == null) {
                     q = new Qualification();
                     q.setName(qm.getQualificationName());
                     q = qualificationRepo.save(q);
+                    qualificationCache.put(q.getName(), q);
                 }
 
                 QualificationEmployeeId id = new QualificationEmployeeId(em.getMatricule(), q.getId());
@@ -95,23 +122,17 @@ public class TrainingServiceImpl implements TrainingService {
                         break;
                     case "X":
                         qe.setStatus(Status.X);
-                        System.err.println("X status: " + qm.getStatus() + fd.getMatricule());
+                        System.err.println("X status: " + qm.getStatus() + " " + fd.getMatricule());
                         break;
                     default:
                         System.err.println("Unknown status: " + qm.getStatus());
                         continue;
                 }
 
-                try {
-                    qualificationEmployeeRepo.save(qe);
-                } catch (Exception e) {
-                    System.err.println("Error saving QualificationEmployee: " + e.getMessage());
-                    e.printStackTrace();
-                }
+                qualificationEmployeeRepo.save(qe);
             }
         }
     }
-
 
 
     @Override

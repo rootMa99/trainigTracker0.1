@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface EmployeeRepo extends JpaRepository<Employee, Long> {
     Employee findByMatricule(long matricule);
+
+    List<Employee> findByMatriculeIn(List<Long> matricules);
 }
