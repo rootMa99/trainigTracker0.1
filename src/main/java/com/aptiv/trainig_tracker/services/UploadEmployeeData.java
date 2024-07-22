@@ -420,37 +420,38 @@ public class UploadEmployeeData {
                         }
                         case 9->{
                             if (cell.getCellType()!=BLANK){
-                                trainings.add("Qualification FA USW");
+                                trainings.add(new QualificationModel("Qualification FA USW", cell.getStringCellValue()));
                             }
                         }
                         case 10->{
                             if (cell.getCellType()!=BLANK){
-                                trainings.add("Qualification FA Vissage");
+                                trainings.add(new QualificationModel("Qualification FA Vissage", cell.getStringCellValue()));
                             }
                         }
                         case 11->{
                             if (cell.getCellType()!=BLANK){
-                                trainings.add("Qualification FA Contention");
+                                trainings.add(new QualificationModel("Qualification FA Contention", cell.getStringCellValue()));
                             }
                         }
                         case 12->{
                             if (cell.getCellType()!=BLANK){
-                                trainings.add("Qualification FA Réparation des inverses (ROB)");
+                                trainings.add(new QualificationModel("Qualification FA Réparation des inverses (ROB)"
+                                        , cell.getStringCellValue()));
                             }
                         }
                         case 13->{
                             if (cell.getCellType()!=BLANK){
-                                trainings.add("Qualification FA Térostat");
+                                trainings.add(new QualificationModel("Qualification FA Térostat", cell.getStringCellValue()));
                             }
                         }
                         case 14->{
                             if (cell.getCellType()!=BLANK){
-                                trainings.add("PCM");
+                                trainings.add(new QualificationModel("PCM", cell.getStringCellValue()));
                             }
                         }
                         case 15->{
                             if (cell.getCellType()!=BLANK){
-                                trainings.add("Euro 6");
+                                trainings.add(new QualificationModel("Euro 6", cell.getStringCellValue()));
                             }
                         }
                         default -> {
@@ -459,7 +460,8 @@ public class UploadEmployeeData {
                     }
                     cellIndex++;
                 }
-
+                faMatrixGlobal.setQualificationModels(trainings);
+                flexData.add(faMatrixGlobal);
             }
         } catch (IOException e){
             throw new RuntimeException(e);
