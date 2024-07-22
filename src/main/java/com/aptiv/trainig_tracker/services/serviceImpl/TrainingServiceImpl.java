@@ -85,7 +85,7 @@ public class TrainingServiceImpl implements TrainingService {
         for (FlexData fd : lfd) {
             Employee em = employeeCache.get(fd.getMatricule());
             if (em == null || fd.getQualificationModels().isEmpty()) {
-                System.err.println("Employee not found for matricule: " + fd.getMatricule());
+                System.err.println("Employee not found for matricule or has no qualification: " + fd.getMatricule());
                 continue;
             }
 
@@ -122,7 +122,6 @@ public class TrainingServiceImpl implements TrainingService {
                         break;
                     case "X":
                         qe.setStatus(Status.X);
-                        System.err.println("X status: " + qm.getStatus() + " " + fd.getMatricule());
                         break;
                     default:
                         System.err.println("Unknown status: " + qm.getStatus());
