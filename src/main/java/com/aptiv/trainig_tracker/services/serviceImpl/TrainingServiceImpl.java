@@ -54,9 +54,14 @@ public class TrainingServiceImpl implements TrainingService {
     public void qualificationData(MultipartFile file) throws IOException {
         if (UploadEmployeeData.isValidFormat(file)) {
             List<FlexData> lfd = UploadEmployeeData.getQualifications(file.getInputStream());
-            System.out.println(lfd);
+
+            for(FlexData fd:lfd){
+                System.out.println(fd);
+            }
         }
     }
+
+
 
     @Override
     public void faMatrixBackup(MultipartFile file) throws IOException {
