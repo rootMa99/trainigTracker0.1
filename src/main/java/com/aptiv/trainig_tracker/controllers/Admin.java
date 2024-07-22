@@ -29,8 +29,8 @@ public class Admin {
         employeeService.saveEmployeeDataToDb(file);
     }
     @PostMapping(path = "/uploadDataQualificationExcel")
-    public void saveQualification(MultipartFile file) throws IllegalAccessException {
-        employeeService.saveEmployeeDataToDb(file);
+    public void saveQualification(MultipartFile file) throws IllegalAccessException, IOException {
+        trainingService.qualificationData(file);
     }
     @PostMapping(path = "/uploadDataTraining")
     public void saveTrainingDataToDataBase(MultipartFile file) throws IllegalAccessException {
