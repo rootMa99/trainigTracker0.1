@@ -58,7 +58,7 @@ public class TrainingServiceImpl implements TrainingService {
         for (FlexData fd : lfd) {
             System.out.println(fd);
             Employee em = employeeRepo.findByMatricule(fd.getMatricule());
-            if (em == null) {
+            if (em == null || fd.getQualificationModels().isEmpty()) {
                 System.err.println("Employee not found for matricule: " + fd.getMatricule());
                 continue;
             }
@@ -72,6 +72,13 @@ public class TrainingServiceImpl implements TrainingService {
                 }
 
                 QualificationEmployeeId id = new QualificationEmployeeId(em.getMatricule(), q.getId());
+
+                Optional<QualificationEmployee> existingQE = qualificationEmployeeRepo.findById(id);
+                if (existingQE.isPresent()) {
+                    System.err.println("QualificationEmployee already exists: " + id);
+                    continue;
+                }
+
                 QualificationEmployee qe = new QualificationEmployee();
                 qe.setId(id);
                 qe.setEmployee(em);
@@ -88,15 +95,23 @@ public class TrainingServiceImpl implements TrainingService {
                         break;
                     case "X":
                         qe.setStatus(Status.X);
+                        System.err.println("X status: " + qm.getStatus() + fd.getMatricule());
                         break;
                     default:
                         System.err.println("Unknown status: " + qm.getStatus());
                         continue;
                 }
-                qualificationEmployeeRepo.save(qe);
+
+                try {
+                    qualificationEmployeeRepo.save(qe);
+                } catch (Exception e) {
+                    System.err.println("Error saving QualificationEmployee: " + e.getMessage());
+                    e.printStackTrace();
+                }
             }
         }
     }
+
 
 
     @Override
