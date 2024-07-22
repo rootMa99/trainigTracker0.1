@@ -49,43 +49,51 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     public void qualificationData(MultipartFile file) throws IOException {
-        if (UploadEmployeeData.isValidFormat(file)) {
-            List<FlexData> lfd = UploadEmployeeData.getQualifications(file.getInputStream());
+        if (!UploadEmployeeData.isValidFormat(file)) {
+            throw new IllegalArgumentException("Invalid file format");
+        }
 
-            for (FlexData fd : lfd) {
-                System.out.println(fd);
-                Employee em = employeeRepo.findByMatricule(fd.getMatricule());
-                if (em != null) {
-                    for (QualificationModel qm : fd.getQualificationModels()) {
-                        Qualification q = qualificationRepo.findByName(qm.getQualificationName());
-                        if (q == null) {
-                            Qualification qmn = new Qualification();
-                            qmn.setName(qm.getQualificationName());
-                            q = qualificationRepo.save(qmn);
-                        }
-                        QualificationEmployee qe = new QualificationEmployee();
-                        QualificationEmployeeId id = new QualificationEmployeeId(em.getMatricule(), q.getId());
-                        qe.setId(id);
-                        qe.setEmployee(em);
-                        qe.setQualification(q);
-                        switch (qm.getStatus()) {
-                            case "R":
-                                qe.setStatus(Status.R);
-                                break;
-                            case "C":
-                                qe.setStatus(Status.C);
-                                break;
-                            case "F":
-                                qe.setStatus(Status.F);
-                                break;
-                            case "X":
-                                qe.setStatus(Status.X);
-                                break;
-                            default:
-                        }
-                        qualificationEmployeeRepo.save(qe);
-                    }
+        List<FlexData> lfd = UploadEmployeeData.getQualifications(file.getInputStream());
+
+        for (FlexData fd : lfd) {
+            System.out.println(fd);
+            Employee em = employeeRepo.findByMatricule(fd.getMatricule());
+            if (em == null) {
+                System.err.println("Employee not found for matricule: " + fd.getMatricule());
+                continue;
+            }
+
+            for (QualificationModel qm : fd.getQualificationModels()) {
+                Qualification q = qualificationRepo.findByName(qm.getQualificationName());
+                if (q == null) {
+                    q = new Qualification();
+                    q.setName(qm.getQualificationName());
+                    q = qualificationRepo.save(q);
                 }
+
+                QualificationEmployeeId id = new QualificationEmployeeId(em.getMatricule(), q.getId());
+                QualificationEmployee qe = new QualificationEmployee();
+                qe.setId(id);
+                qe.setEmployee(em);
+                qe.setQualification(q);
+                switch (qm.getStatus()) {
+                    case "R":
+                        qe.setStatus(Status.R);
+                        break;
+                    case "C":
+                        qe.setStatus(Status.C);
+                        break;
+                    case "F":
+                        qe.setStatus(Status.F);
+                        break;
+                    case "X":
+                        qe.setStatus(Status.X);
+                        break;
+                    default:
+                        System.err.println("Unknown status: " + qm.getStatus());
+                        continue;
+                }
+                qualificationEmployeeRepo.save(qe);
             }
         }
     }
