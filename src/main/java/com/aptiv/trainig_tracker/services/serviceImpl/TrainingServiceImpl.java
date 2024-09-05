@@ -64,14 +64,12 @@ public class TrainingServiceImpl implements TrainingService {
         Map<Long, Employee> employeeCache = new HashMap<>();
         Map<String, Qualification> qualificationCache = new HashMap<>();
 
-        // Bulk fetch employees
         List<Long> matricules = lfd.stream().map(FlexData::getMatricule).distinct().toList();
         List<Employee> employees = employeeRepo.findByMatriculeIn(matricules);
         for (Employee em : employees) {
             employeeCache.put(em.getMatricule(), em);
         }
 
-        // Bulk fetch qualifications
         List<String> qualificationNames = lfd.stream()
                 .flatMap(fd -> fd.getQualificationModels().stream())
                 .map(QualificationModel::getQualificationName)
